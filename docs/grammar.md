@@ -17,24 +17,32 @@ syntax.  In the simplest terms, this means that everything is an S-Expression.
 UConfig should have as few distinct syntactic forms as possible.  Some examples
 of the syntax we need to have:
 
-1. Literals
+### Literals
 
-    "strings"
-    42
-    3.141592
+```
+"strings"
+42
+3.141592
+```
 
-2. S-Expressions: 
+### S-Expressions: 
 
-    (function argument1 argument2)
+```
+(function argument1 argument2)
+```
 
-3. Quoted Lists
+### Quoted Lists
 
-    `(1 2 3 4 5)
-    `("hello" "world" "!")
+```
+`(1 2 3 4 5)
+`("hello" "world" "!")
+```
 
-4. Comments
+### Comments
 
-    ; This won't be interpreted
+```
+; This won't be interpreted
+```
 
 ## Special Forms
 
@@ -66,5 +74,5 @@ parameter names and the second as a function body.
 
     `(1 2 3 4)
 
-Quotes introduce a special structure. In particular, a list.
+A backtick introduces a special structure. In particular, a list.
 
