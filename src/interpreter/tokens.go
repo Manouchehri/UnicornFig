@@ -80,7 +80,6 @@ type Value struct {
 
 // Lists
 
-// An OR type. Either has a literal in it or a name
 type List struct {
 	Contained Value
 	Next      *List
