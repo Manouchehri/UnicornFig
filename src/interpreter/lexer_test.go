@@ -12,7 +12,7 @@ import (
 )
 
 func TestTransitionsFromOpen(t *testing.T) {
-	tests := [...]string{"`", "(", "\"", ";", "3", "H", ")"}
+	tests := [...]string{"\n", "`", "(", "\"", ";", "4", "H", ")"}
 	for i, transition := range TransitionsFromOpen {
 		matched, err := regexp.MatchString(transition.ReadMatch, tests[i])
 		if err != nil {
@@ -24,7 +24,7 @@ func TestTransitionsFromOpen(t *testing.T) {
 }
 
 func TestTransitionsFromList(t *testing.T) {
-	tests := [...]string{"(", "9"}
+	tests := [...]string{"(", ")", "9"}
 	for i, transition := range TransitionsFromList {
 		matched, err := regexp.MatchString(transition.ReadMatch, tests[i])
 		if err != nil {
@@ -60,7 +60,7 @@ func TestTransitionsFromComment(t *testing.T) {
 }
 
 func TestTransitionsFromNumber(t *testing.T) {
-	tests := [...]string{"\n", "3"}
+	tests := [...]string{"\n", ")", "3"}
 	for i, transition := range TransitionsFromNumber {
 		matched, err := regexp.MatchString(transition.ReadMatch, tests[i])
 		if err != nil {
@@ -72,7 +72,7 @@ func TestTransitionsFromNumber(t *testing.T) {
 }
 
 func TestTransitionsFromName(t *testing.T) {
-	tests := [...]string{"\t", "_"}
+	tests := [...]string{"\t", ")", "_"}
 	for i, transition := range TransitionsFromName {
 		matched, err := regexp.MatchString(transition.ReadMatch, tests[i])
 		if err != nil {
@@ -95,9 +95,9 @@ func TestTransition(t *testing.T) {
 		{OPEN, NUMBER, "0", DoNothing, []Token{START_NUMBER, "0"}},
 		{OPEN, OPEN, ")", Return, []Token{END_SEXP}},
 		{LIST, OPEN, "(", Recurse, []Token{}},
-		{STRING, OPEN, "'", Return, []Token{END_STRING}},
+		{STRING, OPEN, "'", DoNothing, []Token{END_STRING}},
 		{COMMENT, OPEN, "\n", Return, []Token{END_COMMENT}},
-		{NUMBER, OPEN, "\t", Return, []Token{END_NUMBER}},
+		{NUMBER, OPEN, "\t", DoNothing, []Token{END_NUMBER}},
 		{NAME, NAME, "f", DoNothing, []Token{Token("f")}},
 	}
 	for _, test := range tests {
@@ -128,32 +128,35 @@ func TestLex(t *testing.T) {
 		Program string
 		Lexed   []Token
 	}{
-		{"3", []Token{START_NUMBER, "3"}},             // Not a valid program, but useful lex test
-		{"2.2", []Token{START_NUMBER, "2", ".", "2"}}, // Also not valid
-		{"'test'", []Token{START_STRING, "t", "e", "s", "t", END_STRING}},
-		{"\"t\"", []Token{START_STRING, "t", END_STRING}},
-		{"(hi)", []Token{START_SEXP, START_NAME, "h", "i", END_SEXP}},
-		{"func", []Token{START_NAME, "f", "u", "n", "c", END_NAME}},
-		{";comment\n", []Token{START_COMMENT, "c", "o", "m", "m", "e", "n", "t", END_COMMENT}},
+		{"(3)", []Token{START_SEXP, START_NUMBER, "3", END_NUMBER, END_SEXP}},
+		{"(2.2)", []Token{START_SEXP, START_NUMBER, "2", ".", "2", END_NUMBER, END_SEXP}},
+		{"('test')", []Token{START_SEXP, START_STRING, "t", "e", "s", "t", END_STRING, END_SEXP}},
+		{"(hi)", []Token{START_SEXP, START_NAME, "h", "i", END_NAME, END_SEXP}},
+		{";comment\n", []Token{START_COMMENT, END_COMMENT}},
 		{"'';\n", []Token{START_STRING, END_STRING, START_COMMENT, END_COMMENT}},
-		{";5\n", []Token{START_COMMENT, "5", END_COMMENT}},
+		{";5\n", []Token{START_COMMENT, END_COMMENT}},
 		{"`()", []Token{START_LIST, END_SEXP}},
 		{"`(test)", []Token{START_LIST, START_NAME, "t", "e", "s", "t", END_NAME, END_SEXP}},
 		{"(t (e \"st\"))", []Token{START_SEXP, START_NAME, "t", END_NAME, START_SEXP, START_NAME, "e", END_NAME, START_STRING, "s", "t", END_STRING, END_SEXP, END_SEXP}},
 		{"(t (e) (s 't'))", []Token{START_SEXP, START_NAME, "t", END_NAME, START_SEXP, START_NAME, "e", END_NAME, END_SEXP, START_SEXP, START_NAME, "s", END_NAME, START_STRING, "t", END_STRING, END_SEXP, END_SEXP}},
 		{"(t `('e' 'st'))", []Token{START_SEXP, START_NAME, "t", END_NAME, START_LIST, START_STRING, "e", END_STRING, START_STRING, "s", "t", END_STRING, END_SEXP, END_SEXP}},
 		{"`(53 't' (e 'st'))", []Token{START_LIST, START_NUMBER, "5", "3", END_NUMBER, START_STRING, "t", END_STRING, START_SEXP, START_NAME, "e", END_NAME, START_STRING, "s", "t", END_STRING, END_SEXP, END_SEXP}},
-		{"`(3.14) ; test", []Token{START_LIST, START_NUMBER, "3", ".", "1", "4", END_NUMBER, END_SEXP, START_COMMENT, " ", "t", "e", "s", "t", END_COMMENT}},
+		{"`(3.14) ; test\n", []Token{START_LIST, START_NUMBER, "3", ".", "1", "4", END_NUMBER, END_SEXP, START_COMMENT, END_COMMENT}},
 		{"(if (x) `(3.14) `('test'))", []Token{START_SEXP, START_NAME, "i", "f", END_NAME, START_SEXP, START_NAME, "x", END_NAME, END_SEXP, START_LIST, START_NUMBER, "3", ".", "1", "4", END_NUMBER, END_SEXP, START_LIST, START_STRING, "t", "e", "s", "t", END_STRING, END_SEXP, END_SEXP}},
 	}
 	for _, test := range tests {
-		lexed, _ := Lex(test.Program)
+		lexed, _ := Lex(test.Program, 0)
 		if len(lexed) != len(test.Lexed) {
+			t.Log("Lexing program: " + test.Program)
+			t.Log(lexed)
 			t.Errorf("Expected %d tokens got %d\n", len(test.Lexed), len(lexed))
+			return
 		}
 		for i, _ := range lexed {
 			if lexed[i] != test.Lexed[i] {
+				t.Log("Lexing program: " + test.Program)
 				t.Errorf("Expected token %s got %s\n", test.Lexed[i], lexed[i])
+				return
 			}
 		}
 	}
