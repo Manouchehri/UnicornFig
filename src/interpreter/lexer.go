@@ -22,10 +22,11 @@ const (
 type Instruction int
 
 const (
-	AddNothing      Instruction = iota
-	AddToken        Instruction = iota
-	AddChar         Instruction = iota
-	AddTokenAndChar Instruction = iota
+	AddNothing         Instruction = iota
+	AddToken           Instruction = iota
+	AddChar            Instruction = iota
+	AddTokenAndChar    Instruction = iota
+	AddTokenAndEndSexp Instruction = iota
 )
 
 type RecursiveAction int
@@ -71,11 +72,13 @@ var TransitionsFromComment = [...]FSMTransition{
 
 var TransitionsFromNumber = [...]FSMTransition{
 	{"\\s", Return, OPEN, AddToken, END_NUMBER},
+	{"\\)", Return, OPEN, AddTokenAndEndSexp, END_NUMBER},
 	{"([0-9]|\\.)", DoNothing, NUMBER, AddChar, NO_TOKEN},
 }
 
 var TransitionsFromName = [...]FSMTransition{
 	{"\\s", Return, OPEN, AddToken, END_NAME},
+	{"\\)", Return, OPEN, AddTokenAndEndSexp, END_NAME},
 	{"[0-9a-zA-Z_]", DoNothing, NAME, AddChar, NO_TOKEN},
 }
 
@@ -108,15 +111,20 @@ func Transition(state State, read string) (error, State, RecursiveAction, []Toke
 		} else if matched {
 			nextState := transition.NextState
 			action := transition.WhatToDo
-			if transition.WhatToAdd == AddNothing {
-				return nil, nextState, action, []Token{}
-			} else if transition.WhatToAdd == AddToken {
-				return nil, nextState, action, []Token{transition.NewToken}
-			} else if transition.WhatToAdd == AddChar {
-				return nil, nextState, action, []Token{Token(read)}
-			} else {
-				return nil, nextState, action, []Token{transition.NewToken, Token(read)}
+			var tokens []Token
+			switch transition.WhatToAdd {
+			case AddNothing:
+				tokens = []Token{}
+			case AddToken:
+				tokens = []Token{transition.NewToken}
+			case AddChar:
+				tokens = []Token{Token(read)}
+			case AddTokenAndEndSexp:
+				tokens = []Token{transition.NewToken, END_SEXP}
+			case AddTokenAndChar:
+				tokens = []Token{transition.NewToken, Token(read)}
 			}
+			return nil, nextState, action, tokens
 		}
 	}
 	// TODO - Provide useful error descriptions
