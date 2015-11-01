@@ -1,38 +1,56 @@
 package interpreter
 
+// Types
+
+type ValueType int
+
+const (
+	UnassignedT ValueType = iota
+	LiteralT    ValueType = iota
+	StringT     ValueType = iota
+	IntegerT    ValueType = iota
+	FloatT      ValueType = iota
+	NameT       ValueType = iota
+	FunctionT   ValueType = iota
+	ListT       ValueType = iota
+)
+
 // Literals
 
 type Literal interface {
-	IsLiteral() bool
+	Type() ValueType
 }
 
-type StringLiteral string
-type IntegerLiteral int64
-type FloatLiteral float64
-
-func (s StringLiteral) IsLiteral() bool {
-	return true
+type StringLiteral struct {
+	Contained string
 }
 
-func (i IntegerLiteral) IsLiteral() bool {
-	return true
+type IntegerLiteral struct {
+	Contained int64
 }
 
-func (f FloatLiteral) IsLiteral() bool {
-	return true
+type FloatLiteral struct {
+	Contained float64
 }
 
-// Names
+type Name struct {
+	Contained string
+}
 
-type Name string
+func (s StringLiteral) Type() ValueType {
+	return StringT
+}
 
-// Lists
+func (i IntegerLiteral) Type() ValueType {
+	return IntegerT
+}
 
-// An OR type. Either has a literal in it or a name
-type List struct {
-	LiteralPtr *Literal
-	NamePtr    *Name
-	Next       *List
+func (f FloatLiteral) Type() ValueType {
+	return FloatT
+}
+
+func (n Name) Type() ValueType {
+	return NameT
 }
 
 // S-Expressions
@@ -50,14 +68,22 @@ type Function struct {
 	Body          SExpression
 }
 
-// Values
-
 // Another OR type. Either a literal, a name, a function, or a list
 type Value struct {
-	LiteralPtr  *Literal
-	NamePtr     *Name
-	FunctionPtr *Function
-	ListPtr     *List
+	Type     ValueType
+	String   StringLiteral
+	Integer  IntegerLiteral
+	Float    FloatLiteral
+	Name     Name
+	Function Function
+}
+
+// Lists
+
+// An OR type. Either has a literal in it or a name
+type List struct {
+	Contained Value
+	Next      *List
 }
 
 type Token string
