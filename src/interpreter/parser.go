@@ -106,7 +106,7 @@ func ParseString(tokens []Token, i int) (error, Value, int) {
 
 func ParseSExpression(tokens []Token, i int) (error, SExpression, int) {
 	sexp := SExpression{}
-	sexp.ContainedType = SExpressionT
+	sexp.Type = SExpressionT
 	if tokens[i] != START_SEXP {
 		errMsg := "Expected START_SEXP, got " + string(tokens[i])
 		return errors.New(errMsg), sexp, i

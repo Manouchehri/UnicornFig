@@ -57,9 +57,9 @@ func (n Name) Type() ValueType {
 // S-Expressions
 
 type SExpression struct {
-	FormName      Name
-	ContainedType ValueType
-	Values        []interface{} // Values or S-Expressions
+	FormName Name
+	Type     ValueType
+	Values   []interface{} // Values or S-Expressions
 }
 
 // Functions

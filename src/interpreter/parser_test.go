@@ -70,7 +70,7 @@ func TestParseNumber(t *testing.T) {
 
 func TestParseComment(t *testing.T) {
 	tokens := []Token{START_COMMENT, END_COMMENT} // The only way it appears
-	err, value, newStart := ParseComment(tokens)
+	err, value, newStart := ParseComment(tokens, 0)
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -87,6 +87,9 @@ func TestParseString(t *testing.T) {
 	err, value, newStart := ParseString(tokens, 0)
 	if err != nil {
 		t.Error(err.Error())
+	}
+	if newStart != 6 {
+		t.Error("Expected ParseString to take us past the end of the string")
 	}
 	if value.Type != StringT {
 		t.Errorf("Expected to parse a string. Got %d\n", value.Type)
@@ -119,18 +122,35 @@ func TestParseSExpression(t *testing.T) {
 	if len(sexp.Values) != 1 {
 		t.Errorf("Expected 1 value in sexp. Got len = %d\n", len(sexp.Values))
 	}
-	if (sexp.Values[0].(Value)).Contained != 3 {
-		value := (sexp.Values[0].(Value)).Contained
-		t.Errorf("Expected first value in sexp to be 3. Got %d\n", value)
+	first := sexp.Values[0].(Value)
+	if first.Type != IntegerT {
+		t.Errorf("Expected first value to be an integer (3). Got type %d.\n", first.Type)
+	}
+	if first.Integer.Contained != 3 {
+		t.Errorf("Expected first value in sexp to be 3. Got %d\n", first.Integer.Contained)
+	}
+	tokens2 := []Token{START_SEXP, START_NAME, "a", END_NAME, START_SEXP, START_NAME, "s", "q", END_NAME, START_NUMBER, "3", END_NUMBER, END_SEXP, END_SEXP}
+	err, sexp, newStart = ParseSExpression(tokens2, 0)
+	if err != nil {
+		t.Error(err.Error())
+	}
+	if newStart != len(tokens2) {
+		t.Error("Parsing second S-Expression should have taken us past the list of tokens")
+	}
+	inner := sexp.Values[0].(SExpression)
+	if inner.FormName.Contained != "sq" {
+		t.Errorf("Expected inner S-Expression to have the form name 'sq'. Got %s\n", inner.FormName.Contained)
+	}
+	firstInner := inner.Values[0].(Value)
+	if firstInner.Type != IntegerT {
+		t.Errorf("Expected argument to inner sexp to be an integer. Got type %d\n", firstInner.Type)
+	}
+	if firstInner.Integer.Contained != 3 {
+		t.Errorf("Expected argument to inner sexp to be 3. Got %d\n", firstInner.Integer.Contained)
 	}
 	etokens := []Token{START_SEXP, START_STRING, "s", "q", END_STRING, END_SEXP}
 	err, sexp, newStart = ParseSExpression(etokens, 0)
 	if err == nil {
 		t.Error("Expected to get an error parsing an S-Expression that starts with a string")
-	}
-	e2tokens := []Token{START_SEXP, START_NAME, "3", "b", END_NAME, END_SEXP}
-	err, sexp, newStart = ParseSExpression(e2tokens, 0)
-	if err == nil {
-		t.Error("Expeced to get an error parsing an S-Expression with invalid content")
 	}
 }
