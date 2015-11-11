@@ -104,41 +104,6 @@ func TestParseString(t *testing.T) {
 	}
 }
 
-func TestParseList(t *testing.T) {
-	tokens := []Token{START_LIST, START_NUMBER, "1", END_NUMBER, START_NAME, "h", END_NAME, END_SEXP}
-	err, list, newStart := ParseList(tokens, 0)
-	if err != nil {
-		t.Error(err.Error())
-	}
-	if newStart != len(tokens) {
-		t.Error("Expected list parsing to take us past the end of the list.")
-	}
-	if list.Contained.Type != IntegerT {
-		t.Errorf("Expected first element of list to have type Integer. Got %d\n", list.Contained.Type)
-	}
-	if list.Contained.Contained != 1 {
-		t.Errorf("Expecte first element to be 1. Got %d\n", list.Contained.Contained)
-	}
-	second := list.Next
-	if second == nil {
-		t.Error("Expected list to have two elements, but Next is nil.")
-	}
-	if second.Contained.Type != NameT {
-		t.Errorf("Expected element to be a Name. Got type %d\n", second.Contained.Type)
-	}
-	if second.Contained.Contained != "h" {
-		t.Errorf("Expected to get name 'h'. Got %s\n", second.Contained.Contained)
-	}
-	eTokens := []Token{START_LIST, START_STRING, "h", "i", END_NAME, END_SEXP}
-	err, list, newStart = ParseList(eTokens, 0)
-	if err == nil {
-		t.Error("Expected to get an error parsing a list with erroneous contents")
-	}
-	if list.Contained.Type != UnassignedT || list.Next != nil {
-		t.Error("Expected values in erroneous list to not be set")
-	}
-}
-
 func TestParseSExpression(t *testing.T) {
 	tokens := []Token{START_SEXP, START_NAME, "s", "q", END_NAME, START_NUMBER, "3", END_NUMBER, END_SEXP}
 	err, sexp, newStart := ParseSExpression(tokens, 0)
