@@ -5,14 +5,15 @@ package interpreter
 type ValueType int
 
 const (
-	UnassignedT ValueType = iota
-	LiteralT    ValueType = iota
-	StringT     ValueType = iota
-	IntegerT    ValueType = iota
-	FloatT      ValueType = iota
-	NameT       ValueType = iota
-	FunctionT   ValueType = iota
-	ListT       ValueType = iota
+	UnassignedT  ValueType = iota
+	LiteralT     ValueType = iota
+	StringT      ValueType = iota
+	IntegerT     ValueType = iota
+	FloatT       ValueType = iota
+	NameT        ValueType = iota
+	FunctionT    ValueType = iota
+	SExpressionT ValueType = iota
+	ValueT       ValueType = iota
 )
 
 // Literals
@@ -56,8 +57,9 @@ func (n Name) Type() ValueType {
 // S-Expressions
 
 type SExpression struct {
-	FormName Name
-	Values   []interface{} // Values or S-Expressions
+	FormName      Name
+	ContainedType ValueType
+	Values        []interface{} // Values or S-Expressions
 }
 
 // Functions
@@ -78,18 +80,10 @@ type Value struct {
 	Function Function
 }
 
-// Lists
-
-type List struct {
-	Contained Value
-	Next      *List
-}
-
 type Token string
 
 const (
 	NO_TOKEN      Token = ""
-	START_LIST    Token = "[START_LIST]"
 	START_SEXP    Token = "[START_SEXP]"
 	START_STRING  Token = "[START_STRING]"
 	START_COMMENT Token = "[START_COMMENT]"

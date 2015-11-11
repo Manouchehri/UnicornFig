@@ -13,7 +13,6 @@ type State int
 const (
 	ERROR   State = iota
 	OPEN    State = iota
-	LIST    State = iota
 	STRING  State = iota
 	COMMENT State = iota
 	NUMBER  State = iota
@@ -48,19 +47,12 @@ type FSMTransition struct {
 
 var TransitionsFromOpen = [...]FSMTransition{
 	{"\\s", DoNothing, OPEN, AddNothing, NO_TOKEN},
-	{"`", DoNothing, LIST, AddToken, START_LIST},
 	{"\\(", Recurse, OPEN, AddToken, START_SEXP},
 	{"(\"|')", DoNothing, STRING, AddToken, START_STRING},
 	{";", DoNothing, COMMENT, AddToken, START_COMMENT},
 	{"[0-9]", DoNothing, NUMBER, AddTokenAndChar, START_NUMBER},
 	{"[a-zA-Z]", DoNothing, NAME, AddTokenAndChar, START_NAME},
 	{"\\)", Return, OPEN, AddToken, END_SEXP},
-}
-
-var TransitionsFromList = [...]FSMTransition{
-	{"\\(", Recurse, OPEN, AddNothing, NO_TOKEN},
-	{"\\)", Return, OPEN, AddNothing, NO_TOKEN},
-	{".", DoNothing, ERROR, AddNothing, NO_TOKEN},
 }
 
 var TransitionsFromString = [...]FSMTransition{
@@ -90,8 +82,6 @@ func Transition(state State, read string) (error, State, RecursiveAction, []Toke
 	switch state {
 	case OPEN:
 		testTransitions = TransitionsFromOpen[:]
-	case LIST:
-		testTransitions = TransitionsFromList[:]
 	case STRING:
 		testTransitions = TransitionsFromString[:]
 	case COMMENT:

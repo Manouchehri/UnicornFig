@@ -25,17 +25,10 @@ of the syntax we need to have:
 3.141592
 ```
 
-### S-Expressions: 
+### S-Expressions:
 
 ```
 (function argument1 argument2)
-```
-
-### Quoted Lists
-
-```
-`(1 2 3 4 5)
-`("hello" "world" "!")
 ```
 
 ### Comments
@@ -69,10 +62,3 @@ Conditionals should exist for branching logic.
 
 The function form has to handle the first S-expression as a list of
 parameter names and the second as a function body.
-
-### Quotes
-
-    `(1 2 3 4)
-
-A backtick introduces a special structure. In particular, a list.
-

@@ -12,20 +12,8 @@ import (
 )
 
 func TestTransitionsFromOpen(t *testing.T) {
-	tests := [...]string{"\n", "`", "(", "\"", ";", "4", "H", ")"}
+	tests := [...]string{"\n", "(", "\"", ";", "4", "H", ")"}
 	for i, transition := range TransitionsFromOpen {
-		matched, err := regexp.MatchString(transition.ReadMatch, tests[i])
-		if err != nil {
-			t.Error(err.Error())
-		} else if !matched {
-			t.Errorf("%s did not match %s\n", transition.ReadMatch, tests[i])
-		}
-	}
-}
-
-func TestTransitionsFromList(t *testing.T) {
-	tests := [...]string{"(", ")", "9"}
-	for i, transition := range TransitionsFromList {
 		matched, err := regexp.MatchString(transition.ReadMatch, tests[i])
 		if err != nil {
 			t.Error(err.Error())
@@ -94,7 +82,6 @@ func TestTransition(t *testing.T) {
 		{OPEN, STRING, "\"", DoNothing, []Token{START_STRING}},
 		{OPEN, NUMBER, "0", DoNothing, []Token{START_NUMBER, "0"}},
 		{OPEN, OPEN, ")", Return, []Token{END_SEXP}},
-		{LIST, OPEN, "(", Recurse, []Token{}},
 		{STRING, OPEN, "'", DoNothing, []Token{END_STRING}},
 		{COMMENT, OPEN, "\n", Return, []Token{END_COMMENT}},
 		{NUMBER, OPEN, "\t", DoNothing, []Token{END_NUMBER}},
@@ -135,14 +122,11 @@ func TestLex(t *testing.T) {
 		{";comment\n", []Token{START_COMMENT, END_COMMENT}},
 		{"'';\n", []Token{START_STRING, END_STRING, START_COMMENT, END_COMMENT}},
 		{";5\n", []Token{START_COMMENT, END_COMMENT}},
-		{"`()", []Token{START_LIST, END_SEXP}},
-		{"`(test)", []Token{START_LIST, START_NAME, "t", "e", "s", "t", END_NAME, END_SEXP}},
 		{"(t (e \"st\"))", []Token{START_SEXP, START_NAME, "t", END_NAME, START_SEXP, START_NAME, "e", END_NAME, START_STRING, "s", "t", END_STRING, END_SEXP, END_SEXP}},
 		{"(t (e) (s 't'))", []Token{START_SEXP, START_NAME, "t", END_NAME, START_SEXP, START_NAME, "e", END_NAME, END_SEXP, START_SEXP, START_NAME, "s", END_NAME, START_STRING, "t", END_STRING, END_SEXP, END_SEXP}},
-		{"(t `('e' 'st'))", []Token{START_SEXP, START_NAME, "t", END_NAME, START_LIST, START_STRING, "e", END_STRING, START_STRING, "s", "t", END_STRING, END_SEXP, END_SEXP}},
-		{"`(53 't' (e 'st'))", []Token{START_LIST, START_NUMBER, "5", "3", END_NUMBER, START_STRING, "t", END_STRING, START_SEXP, START_NAME, "e", END_NAME, START_STRING, "s", "t", END_STRING, END_SEXP, END_SEXP}},
-		{"`(3.14) ; test\n", []Token{START_LIST, START_NUMBER, "3", ".", "1", "4", END_NUMBER, END_SEXP, START_COMMENT, END_COMMENT}},
-		{"(if (x) `(3.14) `('test'))", []Token{START_SEXP, START_NAME, "i", "f", END_NAME, START_SEXP, START_NAME, "x", END_NAME, END_SEXP, START_LIST, START_NUMBER, "3", ".", "1", "4", END_NUMBER, END_SEXP, START_LIST, START_STRING, "t", "e", "s", "t", END_STRING, END_SEXP, END_SEXP}},
+		{"(hi 't' (e 'st'))", []Token{START_SEXP, START_NAME, "h", "i", END_NAME, START_STRING, "t", END_STRING, START_SEXP, START_NAME, "e", END_NAME, START_STRING, "s", "t", END_STRING, END_SEXP, END_SEXP}},
+		{"(x) ; test\n", []Token{START_SEXP, START_NAME, "x", END_NAME, END_SEXP, START_COMMENT, END_COMMENT}},
+		{"(if (x) 3.14 'test')", []Token{START_SEXP, START_NAME, "i", "f", END_NAME, START_SEXP, START_NAME, "x", END_NAME, END_SEXP, START_NUMBER, "3", ".", "1", "4", END_NUMBER, START_STRING, "t", "e", "s", "t", END_STRING, END_SEXP}},
 	}
 	for _, test := range tests {
 		lexed, _ := Lex(test.Program, 0)
