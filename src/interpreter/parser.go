@@ -143,3 +143,33 @@ func ParseSExpression(tokens []Token, i int) (error, SExpression, int) {
 	}
 	return nil, sexp, i + 1
 }
+
+func Parse(tokens []Token) (error, []interface{}) {
+	parsedForms := make([]interface{}, 0)
+	for index := 0; index < len(tokens); {
+		var err error
+		var parsed interface{}
+		var nextIndex int
+		switch tokens[index] {
+		case START_SEXP:
+			err, parsed, nextIndex = ParseSExpression(tokens, index)
+		case START_COMMENT:
+			err, parsed, nextIndex = ParseComment(tokens, index)
+		case START_NAME:
+			err, parsed, nextIndex = ParseName(tokens, index)
+		case START_STRING:
+			err, parsed, nextIndex = ParseString(tokens, index)
+		case START_NUMBER:
+			err, parsed, nextIndex = ParseNumber(tokens, index)
+		default:
+			errMsg := "No parser available to parse token " + string(tokens[index])
+			return errors.New(errMsg), parsedForms
+		}
+		if err != nil {
+			return err, parsedForms
+		}
+		parsedForms = append(parsedForms, parsed)
+		index = nextIndex
+	}
+	return nil, parsedForms
+}

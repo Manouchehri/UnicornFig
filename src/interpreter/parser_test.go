@@ -2,6 +2,7 @@ package interpreter
 
 import (
 	"testing"
+	"fmt"
 )
 
 func TestParseName(t *testing.T) {
@@ -152,5 +153,36 @@ func TestParseSExpression(t *testing.T) {
 	err, sexp, newStart = ParseSExpression(etokens, 0)
 	if err == nil {
 		t.Error("Expected to get an error parsing an S-Expression that starts with a string")
+	}
+}
+
+func TestParse(t *testing.T) {
+	tokens := []Token{START_SEXP, START_NAME, "x", END_NAME, START_NUMBER, "0", END_NUMBER, END_SEXP, START_SEXP, START_NAME, "p", END_NAME, START_STRING, "h", "i", END_STRING, END_SEXP}
+	err, forms := Parse(tokens)
+	if err != nil {
+		t.Error(err.Error())
+	}
+	fmt.Println(forms)
+	firstFormName := forms[0].(SExpression).FormName.Contained
+	if firstFormName != "x" {
+		t.Errorf("Expected first parsed S-Expression to contain the form name 'x'. Got %s\n", firstFormName)
+	}
+	secondFormName := forms[1].(SExpression).FormName.Contained
+	if secondFormName != "p" {
+		t.Errorf("Expected the second parsed S-Expression to contain the form name 'p'. Got %s\n", secondFormName)
+	}
+	secondFormArg := forms[1].(SExpression).Values[0].(Value).String.Contained
+	if secondFormArg != "hi" {
+		t.Errorf("Expected the second parsed S-Expression to contain the argument 'hi'. Got %s\n", secondFormArg)
+	}
+	etokens1 := []Token{START_SEXP, START_NAME, "h", END_NAME, END_SEXP, START_SEXP, "?", "end?", END_SEXP}
+	err, forms = Parse(etokens1)
+	if err == nil {
+		t.Error("Expected to get an error parsing unknown start token '?'.")
+	}
+	etokens2 := []Token{START_SEXP, START_NUMBER, "3", END_NUMBER, END_SEXP}
+	err, forms = Parse(etokens2)
+	if err == nil {
+		t.Error("Expected to get an error parsing an S-Expression that doesn't start with a name (error should propagate up)")
 	}
 }
