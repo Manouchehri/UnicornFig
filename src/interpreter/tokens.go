@@ -64,10 +64,28 @@ type SExpression struct {
 
 // Functions
 
+type Builtin func(...interface{}) (error, Value, Environment)
+
+/**
+ * Represents both user-defined functions, which are built on top of builtins,
+ * as well as builtin functions.  In the case of user-defined fucntions, a body S-Expression
+ * is provided to be evaluated until a builtin is reached that can be executed as Go code.
+ * The IsCallable and Callable fields handle the latter case.
+ */
 type Function struct {
 	FunctionName  Name
 	ArgumentNames []Name
 	Body          SExpression
+	IsCallable    bool
+	Callable      Builtin
+}
+
+func (fn Function) Call(unwrapped ...interface{}) Value {
+	if !fn.IsCallable {
+		return Value{}
+	} else {
+		return (fn.Callable)(...unwrapped)
+	}
 }
 
 // Another OR type. Either a literal, a name, a function, or a list
