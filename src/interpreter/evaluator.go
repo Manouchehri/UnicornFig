@@ -2,6 +2,7 @@ package interpreter
 
 import (
   "errors"
+  "fmt"
 )
 
 // A type that contains information about values in a given scope
@@ -29,14 +30,14 @@ func EvaluateSexp(sexp SExpression, env Environment) (error, Value, Environment)
     return errors.New("No such function " + fnName), Value{}, env
   }
   arguments := make([]Value, 0)
-  for _, arg := sexp.Values {
+  for _, arg := range sexp.Values {
     evalErr, value, newEnv := Evaluate(arg, env)
     if evalErr != nil {
       return evalErr, Value{}, newEnv
     }
     arguments = append(arguments, value)
   }
-  return Apply(env, function, arguments...)
+  return Apply(env, function.Function, arguments...)
 }
 
 func Evaluate(thing interface{}, env Environment) (error, Value, Environment) {
@@ -53,11 +54,11 @@ func Evaluate(thing interface{}, env Environment) (error, Value, Environment) {
 func Apply(env Environment, fn Function, arguments ...Value) (error, Value, Environment) {
   // Check if the function maps to a builtin that can be executed as Go code.
   if fn.IsCallable {
-    goValues := make([]inteface{}, len(arguments))
+    goValues := make([]interface{}, len(arguments))
     for i, arg := range arguments {
       goValues[i] = Unwrap(arg)
     }
-    return fn.Call(...goValues)
+    return fn.Call(goValues...)
   } else {
     return EvaluateSexp(fn.Body, env)
   }
@@ -77,4 +78,5 @@ func Unwrap(value Value) interface{} {
     // TODO - This is definitely NOT going to work in most places
     return value.Function.Callable
   }
+  return nil
 }

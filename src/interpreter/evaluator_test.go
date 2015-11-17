@@ -1,4 +1,4 @@
-package main
+package interpreter
 
 import (
   "testing"
@@ -6,44 +6,51 @@ import (
 
 // Shorthand functions for longer struct initializers
 
+var (
+  zeroi = IntegerLiteral{0}
+  zerof = FloatLiteral{0.0}
+  emptys = StringLiteral{""}
+)
+
 func NewString(str string) Value {
-	return Value{StringT, str, 0, 0.0, Name{}, Function{}}
+	return Value{StringT, StringLiteral{str}, zeroi, zerof, Name{}, Function{}}
 }
 
 func NewInteger(n int64) Value {
-	return Value{IntegerT, "", n, 0.0, Name{}, Function{}}
+	return Value{IntegerT, emptys, IntegerLiteral{n}, zerof, Name{}, Function{}}
 }
 
 func NewFloat(n float64) Value {
-	return Value{FloatT, "", o, n, Name{}, Function{}}
+	return Value{FloatT, emptys, zeroi, FloatLiteral{n}, Name{}, Function{}}
 }
 
 func NewName(identifier string) Value {
-	return Value{NameT, "", 0, 0.0, Name{identifier}, Function{}}
+	return Value{NameT, emptys, zeroi, zerof, Name{identifier}, Function{}}
 }
 
 func NewSExpression(formName string, values ...interface{}) SExpression {
-  sexp := SExpression{NewName(formName), SExpressionT, []interface{}}
+  emptyArray := make([]interface{}, 0)
+  sexp := SExpression{Name{formName}, SExpressionT, emptyArray}
   for _, value := range values {
     sexp.Values = append(sexp.Values, value)
   }
   return sexp
 }
 
-func NewCallableFunction(name string, argNames []string, fn Builtin) Function {
+func NewCallableFunction(name string, argNames []string, fn Builtin) Value {
   names := make([]Name, len(argNames))
   for i, arg := range argNames {
-    names[i] = NewName(arg)
+    names[i] = Name{arg}
   }
-  return Function{NewName(name), names, SExpression{}, true, fn}
+  return Value{FunctionT, emptys, zeroi, zerof, Name{}, Function{Name{name}, names, SExpression{}, true, fn}}
 }
 
-func NewFunction(name string, argNames []string, body SExpression) Function {
+func NewFunction(name string, argNames []string, body SExpression) Value {
   names := make([]Name, len(argNames))
   for i, arg := range argNames {
-    names[i] = NewName(arg)
+    names[i] = Name{arg}
   }
-  return Function{NewName(name), names, body, false, nil}
+  return Value{FunctionT, emptys, zeroi, zerof, Name{}, Function{Name{name}, names, body, false, nil}}
 }
 
 // Actual test code
@@ -81,23 +88,23 @@ func TestEvaluateValue(t *testing.T) {
     t.Error("Expected no items to be added to or removed from the environment after integer evaluation")
   }
   // Test that if we evaluate a name that isn't in the environment, we get an error
-  err3, _, _ := EvaluateValue(NewName("pi"))
+  err3, _, _ := EvaluateValue(NewName("pi"), env)
   if err3 == nil {
     t.Error("Expected to get an error when evaluating a name that isn't in the environment")
   }
 }
 
 func TestApply(t *testing.T) {
-  mult := func(args ...interface{}) Value {
+  mult := func(args ...interface{}) (error, Value, Environment) {
     value := args[0].(Value).Integer.Contained * args[1].(Value).Integer.Contained
-    return NewInteger(value)
+    return nil, NewInteger(value), Environment{}
   }
   env := Environment{
     "mult": NewCallableFunction("mult", []string{"a", "b"}, mult),
     "square": NewFunction("square", []string{"a"}, NewSExpression("mult", NewName("a"), NewName("a"))),
   }
   // Test that builtin functions can be invoked to get us a computed result
-  err1, value1, newEnv1 := Apply(env, env["mult"], NewInteger(10), NewInteger(3))
+  err1, value1, newEnv1 := Apply(env, env["mult"].Function, NewInteger(10), NewInteger(3))
   if err1 != nil {
     t.Error(err1.Error())
   }
@@ -111,7 +118,7 @@ func TestApply(t *testing.T) {
     t.Error("Expected no items to be added or removed from the environment")
   }
   // Test that user-defined functions can be reached and a value computed
-  err2, value2, newEnv2 := Apply(env, env["square"], NewInteger(5))
+  err2, value2, newEnv2 := Apply(env, env["square"].Function, NewInteger(5))
   if err2 != nil {
     t.Error(err2.Error())
   }
@@ -127,9 +134,9 @@ func TestApply(t *testing.T) {
 }
 
 func TestEvaluateSexp(t *testing.T) {
-  mult := func(args ...interface{}) Value {
+  mult := func(args ...interface{}) (error, Value, Environment) {
     value := args[0].(Value).Integer.Contained * args[1].(Value).Integer.Contained
-    return NewInteger(value)
+    return nil, NewInteger(value), Environment{}
   }
   env := Environment{
     "a": NewInteger(4),
@@ -139,7 +146,7 @@ func TestEvaluateSexp(t *testing.T) {
   // (set a 4)
   // (set b 2)
   // (mult a b)
-  err1, value1, newEnv1 := EvaluateSexp(NewSExpression(NewName("mult"), NewName("a"), NewName("b")), env)
+  err1, value1, newEnv1 := EvaluateSexp(NewSExpression("mult", NewName("a"), NewName("b")), env)
   if err1 != nil {
     t.Error(err1)
   }
@@ -152,16 +159,16 @@ func TestEvaluateSexp(t *testing.T) {
   if len(newEnv1) != 3 {
     t.Error("Expected no items to be added to or removed from the environment")
   }
-  err2, _, _ := EvaluateSexp(NewSExpression(NewName("add"), NewName("a"), NewName("b")), env)
+  err2, _, _ := EvaluateSexp(NewSExpression("add", NewName("a"), NewName("b")), env)
   if err2 == nil {
     t.Error("Expected to get an error trying to evaluate a function name that don't exist")
   }
 }
 
 func TestEvaluate(t *testing.T) {
-  mult := func(args ...interface{}) Value {
+  mult := func(args ...interface{}) (error, Value, Environment) {
     value := args[0].(Value).Integer.Contained * args[1].(Value).Integer.Contained
-    return NewInteger(value)
+    return nil, NewInteger(value), Environment{}
   }
   env := Environment{
     "a": NewInteger(-4),
@@ -172,13 +179,13 @@ func TestEvaluate(t *testing.T) {
   if err1 != nil {
     t.Error(err1.Error())
   }
-  if value1.Type != IntergerT {
+  if value1.Type != IntegerT {
     t.Error("Expected to evaluate a value to an integer")
   }
   if value1.Integer.Contained != 4 {
     t.Error("Expected the evaluated name a to contain the value 4")
   }
-  err2, value2, _ := Evaluate(NewSExpression(NewName("mult"), NewName("a"), NewName("b")), env)
+  err2, value2, _ := Evaluate(NewSExpression("mult", NewName("a"), NewName("b")), env)
   if err2 != nil {
     t.Error(err2.Error())
   }

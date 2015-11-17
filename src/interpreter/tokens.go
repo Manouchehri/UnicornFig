@@ -1,5 +1,9 @@
 package interpreter
 
+import (
+	"errors"
+)
+
 // Types
 
 type ValueType int
@@ -80,11 +84,11 @@ type Function struct {
 	Callable      Builtin
 }
 
-func (fn Function) Call(unwrapped ...interface{}) Value {
+func (fn Function) Call(unwrapped ...interface{}) (error, Value, Environment) {
 	if !fn.IsCallable {
-		return Value{}
+		return errors.New("Not a callable function"), Value{}, Environment{}
 	} else {
-		return (fn.Callable)(...unwrapped)
+		return (fn.Callable)(unwrapped...)
 	}
 }
 
