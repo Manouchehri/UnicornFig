@@ -87,30 +87,27 @@ func TestEvaluateValue(t *testing.T) {
   }
 }
 
-
 func TestApply(t *testing.T) {
   mult := func(args ...interface{}) Value {
     value := args[0].(Value).Integer.Contained * args[1].(Value).Integer.Contained
     return NewInteger(value)
   }
   env := Environment{
-    "a": NewInteger(10),
-    "b": NewInteger(3),
     "mult": NewCallableFunction("mult", []string{"a", "b"}, mult),
     "square": NewFunction("square", []string{"a"}, NewSExpression("mult", NewName("a"), NewName("a"))),
   }
   // Test that builtin functions can be invoked to get us a computed result
-  err1, value1, newEnv1 := Apply(env, env["mult"], NewInteger(3), NewInteger(2))
+  err1, value1, newEnv1 := Apply(env, env["mult"], NewInteger(10), NewInteger(3))
   if err1 != nil {
     t.Error(err1.Error())
   }
   if value1.Type != IntegerT {
     t.Error("Expected to get an integer as a result of calling mult")
   }
-  if value1.Integer.Contained != 6 {
-    t.Error("Expected 3 * 2 to be 6")
+  if value1.Integer.Contained != 30 {
+    t.Error("Expected 10 * 3 to be 30")
   }
-  if len(newEnv1) != 4 {
+  if len(newEnv1) != 2 {
     t.Error("Expected no items to be added or removed from the environment")
   }
   // Test that user-defined functions can be reached and a value computed
@@ -124,7 +121,90 @@ func TestApply(t *testing.T) {
   if value2.Integer.Contained != 25 {
     t.Error("Expected square(5) to be 25")
   }
-  if len(newEnv2) != 4 {
+  if len(newEnv2) != 2 {
     t.Error("Expected no items to be added or removed from the environment")
+  }
+}
+
+func TestEvaluateSexp(t *testing.T) {
+  mult := func(args ...interface{}) Value {
+    value := args[0].(Value).Integer.Contained * args[1].(Value).Integer.Contained
+    return NewInteger(value)
+  }
+  env := Environment{
+    "a": NewInteger(4),
+    "b": NewInteger(2),
+    "mult": NewCallableFunction("mult", []string{"a", "b"}, mult),
+  }
+  // (set a 4)
+  // (set b 2)
+  // (mult a b)
+  err1, value1, newEnv1 := EvaluateSexp(NewSExpression(NewName("mult"), NewName("a"), NewName("b")), env)
+  if err1 != nil {
+    t.Error(err1)
+  }
+  if value1.Type != IntegerT {
+    t.Error("Expected to get an integer after calling mult")
+  }
+  if value1.Integer.Contained != 8 {
+    t.Error("Expected 4 * 2 to be 8")
+  }
+  if len(newEnv1) != 3 {
+    t.Error("Expected no items to be added to or removed from the environment")
+  }
+  err2, _, _ := EvaluateSexp(NewSExpression(NewName("add"), NewName("a"), NewName("b")), env)
+  if err2 == nil {
+    t.Error("Expected to get an error trying to evaluate a function name that don't exist")
+  }
+}
+
+func TestEvaluate(t *testing.T) {
+  mult := func(args ...interface{}) Value {
+    value := args[0].(Value).Integer.Contained * args[1].(Value).Integer.Contained
+    return NewInteger(value)
+  }
+  env := Environment{
+    "a": NewInteger(-4),
+    "b": NewInteger(3),
+    "mult": NewCallableFunction("mult", []string{"a", "b"}, mult),
+  }
+  err1, value1, _ := Evaluate(NewName("a"), env)
+  if err1 != nil {
+    t.Error(err1.Error())
+  }
+  if value1.Type != IntergerT {
+    t.Error("Expected to evaluate a value to an integer")
+  }
+  if value1.Integer.Contained != 4 {
+    t.Error("Expected the evaluated name a to contain the value 4")
+  }
+  err2, value2, _ := Evaluate(NewSExpression(NewName("mult"), NewName("a"), NewName("b")), env)
+  if err2 != nil {
+    t.Error(err2.Error())
+  }
+  if value2.Type != IntegerT {
+    t.Error("Expected result of calling mult to be an integer")
+  }
+  if value2.Integer.Contained != -12 {
+    t.Errorf("Expected -4 * 3 to be -12. Got %d\n", value2.Integer.Contained)
+  }
+  err3, _, _ := Evaluate(NewName("x"), env)
+  if err3 == nil {
+    t.Error("Expected to get an error evaluating name that isn'tin the environment")
+  }
+}
+
+func TestUnwrap(t *testing.T) {
+  a := NewInteger(10)
+  pi := NewFloat(3.14)
+  name := NewString("Alice")
+  if Unwrap(a).(int64) != 10 {
+    t.Error("Expected unwrapped integer to have value 10")
+  }
+  if Unwrap(pi).(float64) != 3.14 {
+    t.Error("Expected unwrapped float to have value 3.14")
+  }
+  if Unwrap(name).(string) != "Alice" {
+    t.Error("Expected unwrapped string to have value 'Alice'")
   }
 }
