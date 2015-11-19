@@ -84,7 +84,6 @@ func Apply(env Environment, fn Function, arguments ...Value) (error, Value, Envi
     for i, arg := range arguments {
       goValues[i] = Unwrap(arg)
     }
-    // TODO - Compute a diff of the env returned by call and the local scope and add to env
     err, computedValue, newEnv = fn.Call(localScope, goValues...)
   } else {
     err, computedValue, newEnv = EvaluateSexp(fn.Body, localScope)
