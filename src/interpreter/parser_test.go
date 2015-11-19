@@ -2,7 +2,6 @@ package interpreter
 
 import (
 	"testing"
-	"fmt"
 )
 
 func TestParseName(t *testing.T) {
@@ -162,7 +161,6 @@ func TestParse(t *testing.T) {
 	if err != nil {
 		t.Error(err.Error())
 	}
-	fmt.Println(forms)
 	firstFormName := forms[0].(SExpression).FormName.Contained
 	if firstFormName != "x" {
 		t.Errorf("Expected first parsed S-Expression to contain the form name 'x'. Got %s\n", firstFormName)

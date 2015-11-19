@@ -53,14 +53,25 @@ func Evaluate(thing interface{}, env Environment) (error, Value, Environment) {
 
 func Apply(env Environment, fn Function, arguments ...Value) (error, Value, Environment) {
   // Check if the function maps to a builtin that can be executed as Go code.
+  // Create a local scope
+  localScope := Environment{}
+  for key, value := range env {
+    localScope[key] = value
+  }
+  for i, arg := range arguments {
+    localScope[fn.ArgumentNames[i].Contained] = arg
+  }
   if fn.IsCallable {
     goValues := make([]interface{}, len(arguments))
     for i, arg := range arguments {
       goValues[i] = Unwrap(arg)
     }
-    return fn.Call(goValues...)
+    // TODO - Compute a diff of the env returned by call and the local scope and add to env
+    callErr, computedValue, _ := fn.Call(localScope, goValues...)
+    return callErr, computedValue, env
   } else {
-    return EvaluateSexp(fn.Body, env)
+    evalErr, computedValue, _ := EvaluateSexp(fn.Body, localScope)
+    return evalErr, computedValue, env
   }
 }
 

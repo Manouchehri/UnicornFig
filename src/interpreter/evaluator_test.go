@@ -70,7 +70,7 @@ func TestEvaluateValue(t *testing.T) {
   if value1.String.Contained != "Alice" {
     t.Error("Expected to get the string `Alice`")
   }
-  if len(newEnv1) != 2 {
+  if len(newEnv1) != 1 {
     t.Error("Expected no items to be added to or removed from the environment after name evaluation")
   }
   // Test that evaluating regular values just gets us back the value
@@ -84,7 +84,7 @@ func TestEvaluateValue(t *testing.T) {
   if value2.Integer.Contained != 12 {
     t.Errorf("Expected the integer we found to contain 3. Got %d\n", value2.Integer.Contained)
   }
-  if len(newEnv2) != 2 {
+  if len(newEnv2) != 1 {
     t.Error("Expected no items to be added to or removed from the environment after integer evaluation")
   }
   // Test that if we evaluate a name that isn't in the environment, we get an error
@@ -95,9 +95,9 @@ func TestEvaluateValue(t *testing.T) {
 }
 
 func TestApply(t *testing.T) {
-  mult := func(args ...interface{}) (error, Value, Environment) {
-    value := args[0].(Value).Integer.Contained * args[1].(Value).Integer.Contained
-    return nil, NewInteger(value), Environment{}
+  mult := func(env Environment, args ...interface{}) (error, Value, Environment) {
+    value := args[0].(int64)* args[1].(int64)
+    return nil, NewInteger(value), env
   }
   env := Environment{
     "mult": NewCallableFunction("mult", []string{"a", "b"}, mult),
@@ -126,7 +126,7 @@ func TestApply(t *testing.T) {
     t.Error("Expected result of calling square to be an integer")
   }
   if value2.Integer.Contained != 25 {
-    t.Error("Expected square(5) to be 25")
+    t.Errorf("Expected square(5) to be 25. Got %v\n", value2.Integer.Contained)
   }
   if len(newEnv2) != 2 {
     t.Error("Expected no items to be added or removed from the environment")
@@ -134,9 +134,9 @@ func TestApply(t *testing.T) {
 }
 
 func TestEvaluateSexp(t *testing.T) {
-  mult := func(args ...interface{}) (error, Value, Environment) {
-    value := args[0].(Value).Integer.Contained * args[1].(Value).Integer.Contained
-    return nil, NewInteger(value), Environment{}
+  mult := func(env Environment, args ...interface{}) (error, Value, Environment) {
+    value := args[0].(int64) * args[1].(int64)
+    return nil, NewInteger(value), env
   }
   env := Environment{
     "a": NewInteger(4),
@@ -166,9 +166,9 @@ func TestEvaluateSexp(t *testing.T) {
 }
 
 func TestEvaluate(t *testing.T) {
-  mult := func(args ...interface{}) (error, Value, Environment) {
-    value := args[0].(Value).Integer.Contained * args[1].(Value).Integer.Contained
-    return nil, NewInteger(value), Environment{}
+  mult := func(env Environment, args ...interface{}) (error, Value, Environment) {
+    value := args[0].(int64 )* args[1].(int64)
+    return nil, NewInteger(value), env
   }
   env := Environment{
     "a": NewInteger(-4),
@@ -182,8 +182,8 @@ func TestEvaluate(t *testing.T) {
   if value1.Type != IntegerT {
     t.Error("Expected to evaluate a value to an integer")
   }
-  if value1.Integer.Contained != 4 {
-    t.Error("Expected the evaluated name a to contain the value 4")
+  if value1.Integer.Contained != -4 {
+    t.Error("Expected the evaluated name a to contain the value -4")
   }
   err2, value2, _ := Evaluate(NewSExpression("mult", NewName("a"), NewName("b")), env)
   if err2 != nil {

@@ -68,7 +68,7 @@ type SExpression struct {
 
 // Functions
 
-type Builtin func(...interface{}) (error, Value, Environment)
+type Builtin func(Environment, ...interface{}) (error, Value, Environment)
 
 /**
  * Represents both user-defined functions, which are built on top of builtins,
@@ -84,11 +84,11 @@ type Function struct {
 	Callable      Builtin
 }
 
-func (fn Function) Call(unwrapped ...interface{}) (error, Value, Environment) {
+func (fn Function) Call(env Environment, unwrapped ...interface{}) (error, Value, Environment) {
 	if !fn.IsCallable {
 		return errors.New("Not a callable function"), Value{}, Environment{}
 	} else {
-		return (fn.Callable)(unwrapped...)
+		return (fn.Callable)(env, unwrapped...)
 	}
 }
 
