@@ -8,6 +8,21 @@ import (
 // A type that contains information about values in a given scope
 type Environment map[string]Value
 
+/**
+ * Creates an environment consisting of only keys (and their corresponding values)
+ * that are in env1 and not in env2.
+ */
+func environmentDifference(env1, env2 Environment) Environment {
+  diff := Environment{}
+  for key, value := range env1 {
+    _, found := env2[key]
+    if !found {
+      diff[key] = value
+    }
+  }
+  return diff
+}
+
 func EvaluateValue(value Value, env Environment) (error, Value, Environment) {
   if value.Type == NameT {
     varName := value.Name.Contained
@@ -61,18 +76,24 @@ func Apply(env Environment, fn Function, arguments ...Value) (error, Value, Envi
   for i, arg := range arguments {
     localScope[fn.ArgumentNames[i].Contained] = arg
   }
+  var err error
+  var computedValue Value
+  var newEnv Environment
   if fn.IsCallable {
     goValues := make([]interface{}, len(arguments))
     for i, arg := range arguments {
       goValues[i] = Unwrap(arg)
     }
     // TODO - Compute a diff of the env returned by call and the local scope and add to env
-    callErr, computedValue, _ := fn.Call(localScope, goValues...)
-    return callErr, computedValue, env
+    err, computedValue, newEnv = fn.Call(localScope, goValues...)
   } else {
-    evalErr, computedValue, _ := EvaluateSexp(fn.Body, localScope)
-    return evalErr, computedValue, env
+    err, computedValue, newEnv = EvaluateSexp(fn.Body, localScope)
   }
+  envDiff := environmentDifference(newEnv, localScope)
+  for newKey, newValue := range envDiff {
+    env[newKey] = newValue
+  }
+  return err, computedValue, env
 }
 
 func Unwrap(value Value) interface{} {
