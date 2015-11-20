@@ -73,8 +73,11 @@ func Apply(env Environment, fn Function, arguments ...Value) (error, Value, Envi
   for key, value := range env {
     localScope[key] = value
   }
-  for i, arg := range arguments {
-    localScope[fn.ArgumentNames[i].Contained] = arg
+  for i := 0; i < len(fn.ArgumentNames); i++ {
+    if i >= len(arguments) {
+      return errors.New("Not enough arguments passed to " + fn.FunctionName.Contained), Value{}, env
+    }
+    localScope[fn.ArgumentNames[i].Contained] = arguments[i]
   }
   var err error
   var computedValue Value
