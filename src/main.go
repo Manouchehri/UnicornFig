@@ -1,12 +1,58 @@
 package main
 
 import (
-	"./interpreter"
+	uni "./interpreter"
+	stdlib "./stdlib"
 	"fmt"
+	"os"
+	"io/ioutil"
+	"errors"
 )
 
+func Interpret(program string) (uni.Environment, error) {
+  env := uni.Environment{}
+  // Copy the standard library into the local scope so we don't corrupt the former
+  for key, value := range stdlib.StandardLibrary {
+    env[key] = value
+  }
+  lexed, length := uni.Lex(program, 0)
+  if length != len(program) {
+    return env, errors.New("Could not lex to the end of your program. Check that it is properly formatted.")
+  }
+  parseErr, parsedForms := uni.Parse(lexed)
+  if parseErr != nil {
+    return env, parseErr
+  }
+  var err error = nil
+  //value := uni.Value{}
+  for _, form := range parsedForms {
+    //err, value, env = uni.Evaluate(form, env)
+		err, _, env = uni.Evaluate(form, env)
+    if err != nil {
+      return uni.Environment{}, err
+    }
+    //fmt.Println("sexp", i, "value", value, "\n")
+  }
+  return env, nil
+}
+
 func main() {
-	program := "123 dill 3.124"
-	tokens := interpreter.Parse(program)
-	fmt.Println(tokens)
+	if len(os.Args) != 2 {
+		fmt.Printf("Run this program with %s <program.fig>\n", os.Args[0])
+	} else {
+		file, err := os.Open(os.Args[1])
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		defer file.Close()
+		programBytes, err := ioutil.ReadAll(file)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		program := string(programBytes)
+		//env, err := Interpret(program)
+		Interpret(program)
+	}
 }
