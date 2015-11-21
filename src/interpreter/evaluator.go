@@ -95,6 +95,10 @@ func Apply(env Environment, fn Function, arguments ...Value) (error, Value, Envi
   for newKey, newValue := range envDiff {
     env[newKey] = newValue
   }
+  if err != nil {
+    return err, Value{}, env
+  }
+  err, computedValue, env = EvaluateValue(computedValue, env)
   return err, computedValue, env
 }
 
@@ -108,6 +112,8 @@ func Unwrap(value Value) interface{} {
     return value.Float.Contained
   case NameT:
     return value.Name.Contained
+  case BooleanT:
+    return value.Boolean.Contained
   case FunctionT:
     // TODO - This is definitely NOT going to work in most places
     return value.Function.Callable

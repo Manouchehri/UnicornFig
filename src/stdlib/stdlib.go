@@ -5,6 +5,9 @@ import (
 )
 
 var StandardLibrary uni.Environment = uni.Environment {
+  "true": uni.NewBoolean(true),
+  "false": uni.NewBoolean(false),
+  "pi": uni.NewFloat(3.141592653589793),
   "mul": uni.NewCallableFunction("mul", []string{"a", "b"}, SLIB_Multiply),
   "div": uni.NewCallableFunction("div", []string{"a", "b"}, SLIB_Divide),
   "add": uni.NewCallableFunction("add", []string{"a", "b"}, SLIB_Add),
@@ -15,5 +18,7 @@ var StandardLibrary uni.Environment = uni.Environment {
   "length": uni.NewCallableFunction("length", []string{"str"}, SLIB_Length),
   "upcase": uni.NewCallableFunction("upcase", []string{"str"}, SLIB_Upcase),
   "downcase": uni.NewCallableFunction("downcase", []string{"str"}, SLIB_Downcase),
+  "not": uni.NewCallableFunction("not", []string{"value"}, SLIB_Negate),
+  "zero": uni.NewCallableFunction("zero", []string{"n"}, SLIB_IsZero),
   "print": uni.NewCallableFunction("print", []string{"msg"}, SLIB_Print),
 }

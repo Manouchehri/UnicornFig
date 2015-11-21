@@ -15,6 +15,7 @@ const (
 	IntegerT     ValueType = iota
 	FloatT       ValueType = iota
 	NameT        ValueType = iota
+	BooleanT     ValueType = iota
 	FunctionT    ValueType = iota
 	SExpressionT ValueType = iota
 	ValueT       ValueType = iota
@@ -42,6 +43,10 @@ type Name struct {
 	Contained string
 }
 
+type BooleanLiteral struct {
+	Contained bool
+}
+
 func (s StringLiteral) Type() ValueType {
 	return StringT
 }
@@ -56,6 +61,10 @@ func (f FloatLiteral) Type() ValueType {
 
 func (n Name) Type() ValueType {
 	return NameT
+}
+
+func (b BooleanLiteral) Type() ValueType {
+	return BooleanT
 }
 
 // S-Expressions
@@ -99,6 +108,7 @@ type Value struct {
 	Integer  IntegerLiteral
 	Float    FloatLiteral
 	Name     Name
+	Boolean  BooleanLiteral
 	Function Function
 }
 

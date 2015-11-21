@@ -4,22 +4,27 @@ var (
   zeroi = IntegerLiteral{0}
   zerof = FloatLiteral{0.0}
   emptys = StringLiteral{""}
+  falseb = BooleanLiteral{false}
 )
 
 func NewString(str string) Value {
-	return Value{StringT, StringLiteral{str}, zeroi, zerof, Name{}, Function{}}
+	return Value{StringT, StringLiteral{str}, zeroi, zerof, Name{}, falseb, Function{}}
 }
 
 func NewInteger(n int64) Value {
-	return Value{IntegerT, emptys, IntegerLiteral{n}, zerof, Name{}, Function{}}
+	return Value{IntegerT, emptys, IntegerLiteral{n}, zerof, Name{}, falseb, Function{}}
 }
 
 func NewFloat(n float64) Value {
-	return Value{FloatT, emptys, zeroi, FloatLiteral{n}, Name{}, Function{}}
+	return Value{FloatT, emptys, zeroi, FloatLiteral{n}, Name{}, falseb, Function{}}
 }
 
 func NewName(identifier string) Value {
-	return Value{NameT, emptys, zeroi, zerof, Name{identifier}, Function{}}
+	return Value{NameT, emptys, zeroi, zerof, Name{identifier}, falseb, Function{}}
+}
+
+func NewBoolean(value bool) Value {
+  return Value{BooleanT, emptys, zeroi, zerof, Name{}, BooleanLiteral{value}, Function{}}
 }
 
 func NewSExpression(formName string, values ...interface{}) SExpression {
@@ -36,7 +41,7 @@ func NewCallableFunction(name string, argNames []string, fn Builtin) Value {
   for i, arg := range argNames {
     names[i] = Name{arg}
   }
-  return Value{FunctionT, emptys, zeroi, zerof, Name{}, Function{Name{name}, names, SExpression{}, true, fn}}
+  return Value{FunctionT, emptys, zeroi, zerof, Name{}, falseb, Function{Name{name}, names, SExpression{}, true, fn}}
 }
 
 func NewFunction(name string, argNames []string, body SExpression) Value {
@@ -44,5 +49,5 @@ func NewFunction(name string, argNames []string, body SExpression) Value {
   for i, arg := range argNames {
     names[i] = Name{arg}
   }
-  return Value{FunctionT, emptys, zeroi, zerof, Name{}, Function{Name{name}, names, body, false, nil}}
+  return Value{FunctionT, emptys, zeroi, zerof, Name{}, falseb, Function{Name{name}, names, body, false, nil}}
 }
