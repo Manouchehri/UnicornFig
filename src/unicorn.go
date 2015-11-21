@@ -3,37 +3,37 @@ package main
 import (
 	uni "./interpreter"
 	stdlib "./stdlib"
-	"fmt"
-	"os"
-	"io/ioutil"
 	"errors"
+	"fmt"
+	"io/ioutil"
+	"os"
 )
 
 func Interpret(program string) (uni.Environment, error) {
-  env := uni.Environment{}
-  // Copy the standard library into the local scope so we don't corrupt the former
-  for key, value := range stdlib.StandardLibrary {
-    env[key] = value
-  }
-  lexed, length := uni.Lex(program, 0)
-  if length != len(program) {
-    return env, errors.New("Could not lex to the end of your program. Check that it is properly formatted.")
-  }
-  parseErr, parsedForms := uni.Parse(lexed)
-  if parseErr != nil {
-    return env, parseErr
-  }
-  var err error = nil
-  //value := uni.Value{}
-  for _, form := range parsedForms {
-    //err, value, env = uni.Evaluate(form, env)
+	env := uni.Environment{}
+	// Copy the standard library into the local scope so we don't corrupt the former
+	for key, value := range stdlib.StandardLibrary {
+		env[key] = value
+	}
+	lexed, length := uni.Lex(program, 0)
+	if length != len(program) {
+		return env, errors.New("Could not lex to the end of your program. Check that it is properly formatted.")
+	}
+	parseErr, parsedForms := uni.Parse(lexed)
+	if parseErr != nil {
+		return env, parseErr
+	}
+	var err error = nil
+	//value := uni.Value{}
+	for _, form := range parsedForms {
+		//err, value, env = uni.Evaluate(form, env)
 		err, _, env = uni.Evaluate(form, env)
-    if err != nil {
-      return uni.Environment{}, err
-    }
-    //fmt.Println("sexp", i, "value", value, "\n")
-  }
-  return env, nil
+		if err != nil {
+			return uni.Environment{}, err
+		}
+		//fmt.Println("sexp", i, "value", value, "\n")
+	}
+	return env, nil
 }
 
 func main() {

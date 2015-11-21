@@ -10,10 +10,14 @@ import (
 
 type State int
 
+// NOTE - String1 refers to strings in single-quotes ('), and String2 refers to strings in double-quotes (")
+// We have two states so that we can have one inside the other.
+
 const (
 	ERROR   State = iota
 	OPEN    State = iota
-	STRING  State = iota
+	STRING1 State = iota
+	STRING2 State = iota
 	COMMENT State = iota
 	NUMBER  State = iota
 	NAME    State = iota
@@ -48,16 +52,26 @@ type FSMTransition struct {
 var TransitionsFromOpen = [...]FSMTransition{
 	{"\\s", DoNothing, OPEN, AddNothing, NO_TOKEN},
 	{"\\(", Recurse, OPEN, AddToken, START_SEXP},
-	{"(\"|')", DoNothing, STRING, AddToken, START_STRING},
+	{"'", DoNothing, STRING1, AddToken, START_STRING},
+	{"\"", DoNothing, STRING2, AddToken, START_STRING},
 	{";", DoNothing, COMMENT, AddToken, START_COMMENT},
 	{"[0-9]", DoNothing, NUMBER, AddTokenAndChar, START_NUMBER},
 	{"[a-zA-Z]", DoNothing, NAME, AddTokenAndChar, START_NAME},
 	{"\\)", Return, OPEN, AddToken, END_SEXP},
 }
 
-var TransitionsFromString = [...]FSMTransition{
-	{"(\"|')", DoNothing, OPEN, AddToken, END_STRING},
-	{".", DoNothing, STRING, AddChar, NO_TOKEN},
+// Handle single-quoted strings
+var TransitionsFromString1 = [...]FSMTransition{
+	{"\"", DoNothing, STRING1, AddChar, NO_TOKEN},
+	{"'", DoNothing, OPEN, AddToken, END_STRING},
+	{".", DoNothing, STRING1, AddChar, NO_TOKEN},
+}
+
+// Handle double-quoted strings
+var TransitionsFromString2 = [...]FSMTransition{
+	{"'", DoNothing, STRING2, AddChar, NO_TOKEN},
+	{"\"", DoNothing, OPEN, AddToken, END_STRING},
+	{".", DoNothing, STRING2, AddChar, NO_TOKEN},
 }
 
 var TransitionsFromComment = [...]FSMTransition{
@@ -82,8 +96,10 @@ func Transition(state State, read string) (error, State, RecursiveAction, []Toke
 	switch state {
 	case OPEN:
 		testTransitions = TransitionsFromOpen[:]
-	case STRING:
-		testTransitions = TransitionsFromString[:]
+	case STRING1:
+		testTransitions = TransitionsFromString1[:]
+	case STRING2:
+		testTransitions = TransitionsFromString2[:]
 	case COMMENT:
 		testTransitions = TransitionsFromComment[:]
 	case NUMBER:

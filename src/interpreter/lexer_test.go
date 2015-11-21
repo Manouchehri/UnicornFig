@@ -12,7 +12,7 @@ import (
 )
 
 func TestTransitionsFromOpen(t *testing.T) {
-	tests := [...]string{"\n", "(", "\"", ";", "4", "H", ")"}
+	tests := [...]string{"\n", "(", "'", "\"", ";", "4", "H", ")"}
 	for i, transition := range TransitionsFromOpen {
 		matched, err := regexp.MatchString(transition.ReadMatch, tests[i])
 		if err != nil {
@@ -23,9 +23,21 @@ func TestTransitionsFromOpen(t *testing.T) {
 	}
 }
 
-func TestTransitionsFromString(t *testing.T) {
-	tests := [...]string{"'", " "}
-	for i, transition := range TransitionsFromString {
+func TestTransitionsFromString1(t *testing.T) {
+	tests := [...]string{"\"", "'", " "}
+	for i, transition := range TransitionsFromString1 {
+		matched, err := regexp.MatchString(transition.ReadMatch, tests[i])
+		if err != nil {
+			t.Error(err.Error())
+		} else if !matched {
+			t.Errorf("%s did not match %s\n", transition.ReadMatch, tests[i])
+		}
+	}
+}
+
+func TestTransitionsFromString2(t *testing.T) {
+	tests := [...]string{"'", "\"", "f"}
+	for i, transition := range TransitionsFromString2 {
 		matched, err := regexp.MatchString(transition.ReadMatch, tests[i])
 		if err != nil {
 			t.Error(err.Error())
@@ -79,10 +91,14 @@ func TestTransition(t *testing.T) {
 		Action RecursiveAction
 		Tokens []Token
 	}{
-		{OPEN, STRING, "\"", DoNothing, []Token{START_STRING}},
+		{OPEN, STRING2, "\"", DoNothing, []Token{START_STRING}},
+		{OPEN, STRING1, "'", DoNothing, []Token{START_STRING}},
 		{OPEN, NUMBER, "0", DoNothing, []Token{START_NUMBER, "0"}},
 		{OPEN, OPEN, ")", Return, []Token{END_SEXP}},
-		{STRING, OPEN, "'", DoNothing, []Token{END_STRING}},
+		{STRING1, OPEN, "'", DoNothing, []Token{END_STRING}},
+		{STRING2, OPEN, "\"", DoNothing, []Token{END_STRING}},
+		{STRING1, STRING1, "\"", DoNothing, []Token{"\""}},
+		{STRING2, STRING2, "'", DoNothing, []Token{"'"}},
 		{COMMENT, OPEN, "\n", Return, []Token{END_COMMENT}},
 		{NUMBER, OPEN, "\t", DoNothing, []Token{END_NUMBER}},
 		{NAME, NAME, "f", DoNothing, []Token{Token("f")}},
@@ -118,6 +134,8 @@ func TestLex(t *testing.T) {
 		{"(3)", []Token{START_SEXP, START_NUMBER, "3", END_NUMBER, END_SEXP}},
 		{"(2.2)", []Token{START_SEXP, START_NUMBER, "2", ".", "2", END_NUMBER, END_SEXP}},
 		{"('test')", []Token{START_SEXP, START_STRING, "t", "e", "s", "t", END_STRING, END_SEXP}},
+		{"\"'\"", []Token{START_STRING, "'", END_STRING}},
+		{"'\"'", []Token{START_STRING, "\"", END_STRING}},
 		{"(hi)", []Token{START_SEXP, START_NAME, "h", "i", END_NAME, END_SEXP}},
 		{";comment\n", []Token{START_COMMENT, END_COMMENT}},
 		{"'';\n", []Token{START_STRING, END_STRING, START_COMMENT, END_COMMENT}},
