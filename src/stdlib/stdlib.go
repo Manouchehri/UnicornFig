@@ -20,5 +20,8 @@ var StandardLibrary uni.Environment = uni.Environment {
   "downcase": uni.NewCallableFunction("downcase", []string{"str"}, SLIB_Downcase),
   "not": uni.NewCallableFunction("not", []string{"value"}, SLIB_Negate),
   "zero": uni.NewCallableFunction("zero", []string{"n"}, SLIB_IsZero),
+  "and": uni.NewCallableFunction("and", []string{"b1","b2"}, SLIB_And),
+  "or": uni.NewCallableFunction("or", []string{"b1", "b2"}, SLIB_Or),
+  "equal": uni.NewCallableFunction("equal", []string{"a", "b"}, SLIB_Equal),
   "print": uni.NewCallableFunction("print", []string{"msg"}, SLIB_Print),
 }
