@@ -54,7 +54,21 @@ func EvaluateDefine(sexp SExpression, env Environment) (error, Value, Environmen
 }
 
 func EvaluateIf(sexp SExpression, env Environment) (error, Value, Environment) {
-	return nil, Value{}, env
+	if len(sexp.Values) != 3 {
+		return errors.New("If expects one condition and two branches."), Value{}, env
+	}
+	conditionErr, conditionResult, newEnv := Evaluate(sexp.Values[0], env)
+	if conditionErr != nil {
+		return conditionErr, conditionResult, newEnv
+	}
+	if conditionResult.Type != BooleanT {
+		return errors.New("Conditions for branching must evaluate to either true or false."), conditionResult, newEnv
+	}
+	if conditionResult.Boolean.Contained {
+		return Evaluate(sexp.Values[1], newEnv)
+	} else {
+		return Evaluate(sexp.Values[2], newEnv)
+	}
 }
 
 func EvaluateFunction(sexp SExpression, env Environment) (error, Value, Environment) {
