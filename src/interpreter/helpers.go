@@ -44,7 +44,7 @@ func NewCallableFunction(name string, argNames []string, fn Builtin) Value {
 	return Value{FunctionT, emptys, zeroi, zerof, Name{}, falseb, Function{Name{name}, names, SExpression{}, true, fn}}
 }
 
-func NewFunction(name string, argNames []string, body SExpression) Value {
+func NewFunction(name string, argNames []string, body interface{}) Value {
 	names := make([]Name, len(argNames))
 	for i, arg := range argNames {
 		names[i] = Name{arg}

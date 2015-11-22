@@ -72,7 +72,39 @@ func EvaluateIf(sexp SExpression, env Environment) (error, Value, Environment) {
 }
 
 func EvaluateFunction(sexp SExpression, env Environment) (error, Value, Environment) {
-	return nil, Value{}, env
+	if len(sexp.Values) != 2 {
+		fmt.Println("Error case 1")
+		errMsg := "Function declarations expect one S-Expression with a set of argument names and one with a body."
+		return errors.New(errMsg), Value{}, env
+	}
+	switch sexp.Values[0].(type) {
+	case SExpression:
+		break
+	default:
+		fmt.Println("Error case 2")
+		return errors.New("Function argument names must be declared in an S-Expression."), Value{}, env
+	}
+	argumentNames := make([]string, 0)
+	argumentList := sexp.Values[0].(SExpression)
+	// Expect the character "_" to signify that a function takes no arguments, as opposed to an empty S-Expression
+	if argumentList.FormName.Contained != "_" {
+		argumentNames = append(argumentNames, argumentList.FormName.Contained)
+		for i := 0; i < len(argumentList.Values); i++ {
+			switch argumentList.Values[i].(type) {
+			case Value:
+				if argumentList.Values[i].(Value).Type != NameT {
+					fmt.Println("Error case 3")
+					return errors.New("All items in a function argument list must be names."), Value{}, env
+				}
+			default:
+				fmt.Println("Error case 4")
+				return errors.New("All items in a function argument list must be names."), Value{}, env
+			}
+			argumentNames = append(argumentNames, argumentList.Values[i].(Value).Name.Contained)
+		}
+	}
+	fmt.Println("Created function")
+	return nil, NewFunction("tempname", argumentNames, sexp.Values[1]), env
 }
 
 func EvaluateSpecialForm(sexp SExpression, env Environment) (error, Value, Environment) {
@@ -158,7 +190,7 @@ func Apply(env Environment, fn Function, arguments ...Value) (error, Value, Envi
 		}
 		err, computedValue, newEnv = fn.Call(localScope, goValues...)
 	} else {
-		err, computedValue, newEnv = EvaluateSexp(fn.Body, localScope)
+		err, computedValue, newEnv = Evaluate(fn.Body, localScope)
 	}
 	envDiff := environmentDifference(newEnv, localScope)
 	for newKey, newValue := range envDiff {

@@ -89,7 +89,7 @@ type Builtin func(Environment, ...interface{}) (error, Value, Environment)
 type Function struct {
 	FunctionName  Name
 	ArgumentNames []Name
-	Body          SExpression
+	Body          interface{} // Can be a Value or an S-Expression
 	IsCallable    bool
 	Callable      Builtin
 }
