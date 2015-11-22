@@ -8,6 +8,10 @@ import (
 // A type that contains information about values in a given scope
 type Environment map[string]Value
 
+func isSpecialForm(formName string) bool {
+	return formName == "define" || formName == "if" || formName == "function"
+}
+
 /**
  * Creates an environment consisting of only keys (and their corresponding values)
  * that are in env1 and not in env2.
@@ -21,6 +25,52 @@ func environmentDifference(env1, env2 Environment) Environment {
 		}
 	}
 	return diff
+}
+
+func EvaluateDefine(sexp SExpression, env Environment) (error, Value, Environment) {
+	// Each value is (or should be) an S-Expression with a name to assign to and a value to evalute
+	var lastValue Value
+	for _, definition := range sexp.Values {
+		switch definition.(type) {
+		case SExpression:
+			def := definition.(SExpression)
+			if len(def.Values) != 1 {
+				errMsg := "Definitions must be S-Expressions of the form (name <thing-to-evaluate>)."
+				return errors.New(errMsg), Value{}, env
+			}
+			evalErr, value, newEnv := Evaluate(def.Values[0], env)
+			if evalErr != nil {
+				return evalErr, value, newEnv
+			}
+			lastValue = value
+			newEnv[def.FormName.Contained] = value
+			env = newEnv
+		default:
+			errMsg := "Pairs of names to assign to and their corresponding values must be contained in S-Expressions."
+			return errors.New(errMsg), Value{}, env
+		}
+	}
+	return nil, lastValue, env
+}
+
+func EvaluateIf(sexp SExpression, env Environment) (error, Value, Environment) {
+	return nil, Value{}, env
+}
+
+func EvaluateFunction(sexp SExpression, env Environment) (error, Value, Environment) {
+	return nil, Value{}, env
+}
+
+func EvaluateSpecialForm(sexp SExpression, env Environment) (error, Value, Environment) {
+	switch sexp.FormName.Contained {
+	case "define":
+		return EvaluateDefine(sexp, env)
+	case "if":
+		return EvaluateIf(sexp, env)
+	case "function":
+		return EvaluateFunction(sexp, env)
+	}
+	return errors.New("Unrecognized special form " + sexp.FormName.Contained), Value{}, env
 }
 
 func EvaluateValue(value Value, env Environment) (error, Value, Environment) {
@@ -60,7 +110,12 @@ func Evaluate(thing interface{}, env Environment) (error, Value, Environment) {
 	case Value:
 		return EvaluateValue(thing.(Value), env)
 	case SExpression:
-		return EvaluateSexp(thing.(SExpression), env)
+		sexp := thing.(SExpression)
+		if isSpecialForm(sexp.FormName.Contained) {
+			return EvaluateSpecialForm(sexp, env)
+		} else {
+			return EvaluateSexp(thing.(SExpression), env)
+		}
 	default:
 		return errors.New(fmt.Sprintf("No way to evaluate %v\n", thing)), Value{}, env
 	}

@@ -18,6 +18,7 @@ const (
 	BooleanT     ValueType = iota
 	FunctionT    ValueType = iota
 	SExpressionT ValueType = iota
+	SpecialFormT ValueType = iota
 	ValueT       ValueType = iota
 )
 
@@ -111,6 +112,54 @@ type Value struct {
 	Boolean  BooleanLiteral
 	Function Function
 }
+
+/**
+ * Special forms
+ */
+
+type SpecialForm interface {
+	Form() SpecialFormType
+}
+
+type SpecialFormType int
+
+const (
+	DefinitionFormT SpecialFormType = iota
+	FunctionFormT   SpecialFormType = iota
+	ConditionFormT  SpecialFormType = iota
+)
+
+type DefinitionForm struct {
+	Definitions []SExpression
+}
+
+type FunctionForm struct {
+	Name      Name
+	Arguments SExpression
+	Body      SExpression
+}
+
+type ConditionForm struct {
+	Condition SExpression
+	Branch1   SExpression
+	Branch2   SExpression
+}
+
+func (df DefinitionForm) Form() SpecialFormType {
+	return DefinitionFormT
+}
+
+func (ff FunctionForm) Form() SpecialFormType {
+	return FunctionFormT
+}
+
+func (cf ConditionForm) Form() SpecialFormType {
+	return ConditionFormT
+}
+
+/**
+ * Token types for the parser
+ */
 
 type Token string
 
