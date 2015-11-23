@@ -99,7 +99,7 @@ func TestTransition(t *testing.T) {
 		{STRING2, OPEN, "\"", DoNothing, []Token{END_STRING}},
 		{STRING1, STRING1, "\"", DoNothing, []Token{"\""}},
 		{STRING2, STRING2, "'", DoNothing, []Token{"'"}},
-		{COMMENT, OPEN, "\n", Return, []Token{END_COMMENT}},
+		{COMMENT, OPEN, "\n", DoNothing, []Token{END_COMMENT}},
 		{NUMBER, OPEN, "\t", DoNothing, []Token{END_NUMBER}},
 		{NAME, NAME, "f", DoNothing, []Token{Token("f")}},
 	}

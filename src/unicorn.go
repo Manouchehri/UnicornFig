@@ -31,7 +31,6 @@ func Interpret(program string) (uni.Environment, error) {
 		if err != nil {
 			return uni.Environment{}, err
 		}
-		//fmt.Println("sexp", i, "value", value, "\n")
 	}
 	return env, nil
 }

@@ -75,7 +75,7 @@ var TransitionsFromString2 = [...]FSMTransition{
 }
 
 var TransitionsFromComment = [...]FSMTransition{
-	{"\n", Return, OPEN, AddToken, END_COMMENT},
+	{"\n", DoNothing, OPEN, AddToken, END_COMMENT},
 	{".", DoNothing, COMMENT, AddNothing, NO_TOKEN},
 }
 
