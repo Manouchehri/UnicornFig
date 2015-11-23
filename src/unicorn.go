@@ -52,7 +52,9 @@ func main() {
 			return
 		}
 		program := string(programBytes)
-		//env, err := Interpret(program)
-		Interpret(program)
+		_, err = Interpret(program)
+		if err != nil {
+			fmt.Println("ERROR\n  ", err.Error())
+		}
 	}
 }
