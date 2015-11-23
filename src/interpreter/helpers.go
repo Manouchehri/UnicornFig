@@ -5,26 +5,28 @@ var (
 	zerof  = FloatLiteral{0.0}
 	emptys = StringLiteral{""}
 	falseb = BooleanLiteral{false}
+	emptyl = ListNode{nil, nil}
+	emptym = Mapping{map[string]interface{}{}}
 )
 
 func NewString(str string) Value {
-	return Value{StringT, StringLiteral{str}, zeroi, zerof, Name{}, falseb, Function{}}
+	return Value{StringT, StringLiteral{str}, zeroi, zerof, Name{}, falseb, Function{}, &emptyl, emptym}
 }
 
 func NewInteger(n int64) Value {
-	return Value{IntegerT, emptys, IntegerLiteral{n}, zerof, Name{}, falseb, Function{}}
+	return Value{IntegerT, emptys, IntegerLiteral{n}, zerof, Name{}, falseb, Function{}, &emptyl, emptym}
 }
 
 func NewFloat(n float64) Value {
-	return Value{FloatT, emptys, zeroi, FloatLiteral{n}, Name{}, falseb, Function{}}
+	return Value{FloatT, emptys, zeroi, FloatLiteral{n}, Name{}, falseb, Function{}, &emptyl, emptym}
 }
 
 func NewName(identifier string) Value {
-	return Value{NameT, emptys, zeroi, zerof, Name{identifier}, falseb, Function{}}
+	return Value{NameT, emptys, zeroi, zerof, Name{identifier}, falseb, Function{}, &emptyl, emptym}
 }
 
 func NewBoolean(value bool) Value {
-	return Value{BooleanT, emptys, zeroi, zerof, Name{}, BooleanLiteral{value}, Function{}}
+	return Value{BooleanT, emptys, zeroi, zerof, Name{}, BooleanLiteral{value}, Function{}, &emptyl, emptym}
 }
 
 func NewSExpression(formName string, values ...interface{}) SExpression {
@@ -41,7 +43,7 @@ func NewCallableFunction(name string, argNames []string, fn Builtin) Value {
 	for i, arg := range argNames {
 		names[i] = Name{arg}
 	}
-	return Value{FunctionT, emptys, zeroi, zerof, Name{}, falseb, Function{Name{name}, names, SExpression{}, true, fn}}
+	return Value{FunctionT, emptys, zeroi, zerof, Name{}, falseb, Function{Name{name}, names, SExpression{}, true, fn}, &emptyl, emptym}
 }
 
 func NewFunction(name string, argNames []string, body interface{}) Value {
@@ -49,5 +51,13 @@ func NewFunction(name string, argNames []string, body interface{}) Value {
 	for i, arg := range argNames {
 		names[i] = Name{arg}
 	}
-	return Value{FunctionT, emptys, zeroi, zerof, Name{}, falseb, Function{Name{name}, names, body, false, nil}}
+	return Value{FunctionT, emptys, zeroi, zerof, Name{}, falseb, Function{Name{name}, names, body, false, nil}, &emptyl, emptym}
+}
+
+func NewList() Value {
+	return Value{ListT, emptys, zeroi, zerof, Name{}, falseb, Function{}, &emptyl, emptym}
+}
+
+func NewMap() Value {
+	return Value{MapT, emptys, zeroi, zerof, Name{}, falseb, Function{}, &emptyl, emptym}
 }

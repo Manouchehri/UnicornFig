@@ -19,6 +19,8 @@ const (
 	FunctionT    ValueType = iota
 	SExpressionT ValueType = iota
 	SpecialFormT ValueType = iota
+	ListT        ValueType = iota
+	MapT         ValueType = iota
 	ValueT       ValueType = iota
 )
 
@@ -111,6 +113,21 @@ type Value struct {
 	Name     Name
 	Boolean  BooleanLiteral
 	Function Function
+	List     *ListNode
+	Map      Mapping
+}
+
+// Lists
+
+type ListNode struct {
+	Data interface{}
+	Next *ListNode
+}
+
+// Maps
+
+type Mapping struct {
+	Data map[string]interface{}
 }
 
 /**
