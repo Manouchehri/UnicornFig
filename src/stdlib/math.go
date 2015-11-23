@@ -52,3 +52,35 @@ func SLIB_Subtract(env uni.Environment, arguments ...interface{}) (error, uni.Va
 	}
 	return nil, uni.NewInteger(result), env
 }
+
+func SLIB_GreaterThan(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
+	if len(arguments) != 2 {
+		return errors.New("Greater-Than function expects exactly two arguments."), uni.Value{}, env
+	}
+	result := arguments[0].(int64) > arguments[1].(int64)
+	return nil, ToBoolKeyword(result), env
+}
+
+func SLIB_LessThan(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
+	if len(arguments) != 2 {
+		return errors.New("Less-Than function expects exactly two arguments."), uni.Value{}, env
+	}
+	result := arguments[0].(int64) < arguments[1].(int64)
+	return nil, ToBoolKeyword(result), env
+}
+
+func SLIB_GreaterOrEqual(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
+	if len(arguments) != 2 {
+		return errors.New("Greater-Than-Or-Equal function expects exactly two arguments."), uni.Value{}, env
+	}
+	result := arguments[0].(int64) >= arguments[1].(int64)
+	return nil, ToBoolKeyword(result), env
+}
+
+func SLIB_LessOrEqual(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
+	if len(arguments) != 2 {
+		return errors.New("Less-Than-Or-Equal function expects exactly two arguments."), uni.Value{}, env
+	}
+	result := arguments[0].(int64) >= arguments[1].(int64)
+	return nil, ToBoolKeyword(result), env
+}

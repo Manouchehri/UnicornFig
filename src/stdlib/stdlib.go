@@ -23,5 +23,9 @@ var StandardLibrary uni.Environment = uni.Environment{
 	"and":      uni.NewCallableFunction("and", []string{"b1", "b2"}, SLIB_And),
 	"or":       uni.NewCallableFunction("or", []string{"b1", "b2"}, SLIB_Or),
 	"equal":    uni.NewCallableFunction("equal", []string{"a", "b"}, SLIB_Equal),
+	"greater":  uni.NewCallableFunction("greater", []string{"a", "b"}, SLIB_GreaterThan),
+	"less":     uni.NewCallableFunction("less", []string{"a", "b"}, SLIB_LessThan),
+	"geq":      uni.NewCallableFunction("geq", []string{"a", "b"}, SLIB_GreaterOrEqual),
+	"leq":      uni.NewCallableFunction("leq", []string{"a", "b"}, SLIB_LessOrEqual),
 	"print":    uni.NewCallableFunction("print", []string{"msg"}, SLIB_Print),
 }

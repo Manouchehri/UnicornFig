@@ -5,7 +5,7 @@ import (
 	"errors"
 )
 
-func toBoolKeyword(value bool) uni.Value {
+func ToBoolKeyword(value bool) uni.Value {
 	if value {
 		return uni.NewName("true")
 	} else {
@@ -18,7 +18,7 @@ func SLIB_Negate(env uni.Environment, arguments ...interface{}) (error, uni.Valu
 		return errors.New("Negation function expects exactly one argument."), uni.Value{}, env
 	}
 	value := arguments[0].(bool)
-	return nil, toBoolKeyword(!value), env
+	return nil, ToBoolKeyword(!value), env
 }
 
 func SLIB_IsZero(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
@@ -27,7 +27,7 @@ func SLIB_IsZero(env uni.Environment, arguments ...interface{}) (error, uni.Valu
 	}
 	value := arguments[0].(int64)
 	isZero := value == int64(0)
-	return nil, toBoolKeyword(isZero), env
+	return nil, ToBoolKeyword(isZero), env
 }
 
 func SLIB_And(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
@@ -40,7 +40,7 @@ func SLIB_And(env uni.Environment, arguments ...interface{}) (error, uni.Value, 
 	for i := 1; i < len(arguments) && result; i++ {
 		result = result && arguments[i].(bool)
 	}
-	return nil, toBoolKeyword(result), env
+	return nil, ToBoolKeyword(result), env
 }
 
 func SLIB_Or(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
@@ -55,7 +55,7 @@ func SLIB_Or(env uni.Environment, arguments ...interface{}) (error, uni.Value, u
 			break
 		}
 	}
-	return nil, toBoolKeyword(result), env
+	return nil, ToBoolKeyword(result), env
 }
 
 func SLIB_Equal(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
@@ -85,5 +85,5 @@ func SLIB_Equal(env uni.Environment, arguments ...interface{}) (error, uni.Value
 			result = value == arguments[i].(bool)
 		}
 	}
-	return nil, toBoolKeyword(result), env
+	return nil, ToBoolKeyword(result), env
 }
