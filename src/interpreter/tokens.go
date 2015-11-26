@@ -113,21 +113,20 @@ type Value struct {
 	Name     Name
 	Boolean  BooleanLiteral
 	Function Function
-	List     *ListNode
+	List     List
 	Map      Mapping
 }
 
 // Lists
 
-type ListNode struct {
-	Data interface{}
-	Next *ListNode
+type List struct {
+	Data []Value
 }
 
 // Maps
 
 type Mapping struct {
-	Data map[string]interface{}
+	Data map[string]Value
 }
 
 /**

@@ -24,10 +24,11 @@ func Interpret(program string) (uni.Environment, error) {
 		return env, parseErr
 	}
 	var err error = nil
+	//var value uni.Value
 	//value := uni.Value{}
 	for _, form := range parsedForms {
-		//err, value, env = uni.Evaluate(form, env)
 		err, _, env = uni.Evaluate(form, env)
+		//err, value, env = uni.Evaluate(form, env)
 		if err != nil {
 			return uni.Environment{}, err
 		}

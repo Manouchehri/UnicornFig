@@ -22,7 +22,7 @@ func SLIB_Map(env uni.Environment, arguments ...interface{}) (error, uni.Value, 
 		default:
 			return errors.New("All keys must be strings."), mapping, env
 		}
-		mapping.Map.Data[key.(string)] = value
+		mapping.Map.Data[key.(string)] = value.(uni.Value)
 	}
 	return nil, mapping, env
 }

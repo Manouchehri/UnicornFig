@@ -27,5 +27,10 @@ var StandardLibrary uni.Environment = uni.Environment{
 	"less":     uni.NewCallableFunction("less", []string{"a", "b"}, SLIB_LessThan),
 	"geq":      uni.NewCallableFunction("geq", []string{"a", "b"}, SLIB_GreaterOrEqual),
 	"leq":      uni.NewCallableFunction("leq", []string{"a", "b"}, SLIB_LessOrEqual),
+	"list":     uni.NewCallableFunction("list", []string{}, SLIB_List),
+	"first":    uni.NewCallableFunction("first", []string{"_list_"}, SLIB_First),
+	"tail":     uni.NewCallableFunction("tail", []string{"_list_"}, SLIB_Tail),
+	"append":   uni.NewCallableFunction("append", []string{"_list_", "_value_"}, SLIB_Append),
+	"mapping":  uni.NewCallableFunction("mapping", []string{}, SLIB_Map),
 	"print":    uni.NewCallableFunction("print", []string{"msg"}, SLIB_Print),
 }

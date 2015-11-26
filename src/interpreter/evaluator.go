@@ -73,7 +73,6 @@ func EvaluateIf(sexp SExpression, env Environment) (error, Value, Environment) {
 
 func EvaluateFunction(sexp SExpression, env Environment) (error, Value, Environment) {
 	if len(sexp.Values) != 2 {
-		fmt.Println("Error case 1")
 		errMsg := "Function declarations expect one S-Expression with a set of argument names and one with a body."
 		return errors.New(errMsg), Value{}, env
 	}
@@ -81,7 +80,6 @@ func EvaluateFunction(sexp SExpression, env Environment) (error, Value, Environm
 	case SExpression:
 		break
 	default:
-		fmt.Println("Error case 2")
 		return errors.New("Function argument names must be declared in an S-Expression."), Value{}, env
 	}
 	argumentNames := make([]string, 0)
@@ -93,17 +91,14 @@ func EvaluateFunction(sexp SExpression, env Environment) (error, Value, Environm
 			switch argumentList.Values[i].(type) {
 			case Value:
 				if argumentList.Values[i].(Value).Type != NameT {
-					fmt.Println("Error case 3")
 					return errors.New("All items in a function argument list must be names."), Value{}, env
 				}
 			default:
-				fmt.Println("Error case 4")
 				return errors.New("All items in a function argument list must be names."), Value{}, env
 			}
 			argumentNames = append(argumentNames, argumentList.Values[i].(Value).Name.Contained)
 		}
 	}
-	fmt.Println("Created function")
 	return nil, NewFunction("tempname", argumentNames, sexp.Values[1]), env
 }
 
@@ -201,23 +196,4 @@ func Apply(env Environment, fn Function, arguments ...Value) (error, Value, Envi
 	}
 	err, computedValue, env = EvaluateValue(computedValue, env)
 	return err, computedValue, env
-}
-
-func Unwrap(value Value) interface{} {
-	switch value.Type {
-	case StringT:
-		return value.String.Contained
-	case IntegerT:
-		return value.Integer.Contained
-	case FloatT:
-		return value.Float.Contained
-	case NameT:
-		return value.Name.Contained
-	case BooleanT:
-		return value.Boolean.Contained
-	case FunctionT:
-		// TODO - This is definitely NOT going to work in most places
-		return value.Function.Callable
-	}
-	return nil
 }
