@@ -99,3 +99,17 @@ func SLIB_Append(env uni.Environment, arguments ...interface{}) (error, uni.Valu
 	list.List.Data = append(list.List.Data, wrappedValues...)
 	return nil, list, env
 }
+
+func SLIB_Size(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
+	if len(arguments) != 1 {
+		return errors.New("List Size function expects exactly one list argument."), uni.Value{}, env
+	}
+	switch arguments[0].(type) {
+	case []interface{}:
+		break
+	default:
+		return errors.New("List Size function expects first argument to be a list."), uni.Value{}, env
+	}
+	length := int64(len(arguments[0].([]interface{})))
+	return nil, uni.NewInteger(length), env
+}
