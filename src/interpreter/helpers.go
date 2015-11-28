@@ -9,27 +9,35 @@ var (
 	zerof  = FloatLiteral{0.0}
 	emptys = StringLiteral{""}
 	falseb = BooleanLiteral{false}
-	emptyl = List{[]Value{}}
-	emptym = Mapping{map[string]Value{}}
 )
 
 func NewString(str string) Value {
+	emptyl := List{[]Value{}}
+	emptym := Mapping{map[string]Value{}}
 	return Value{StringT, StringLiteral{str}, zeroi, zerof, Name{}, falseb, Function{}, emptyl, emptym}
 }
 
 func NewInteger(n int64) Value {
+	emptyl := List{[]Value{}}
+	emptym := Mapping{map[string]Value{}}
 	return Value{IntegerT, emptys, IntegerLiteral{n}, zerof, Name{}, falseb, Function{}, emptyl, emptym}
 }
 
 func NewFloat(n float64) Value {
+	emptyl := List{[]Value{}}
+	emptym := Mapping{map[string]Value{}}
 	return Value{FloatT, emptys, zeroi, FloatLiteral{n}, Name{}, falseb, Function{}, emptyl, emptym}
 }
 
 func NewName(identifier string) Value {
+	emptyl := List{[]Value{}}
+	emptym := Mapping{map[string]Value{}}
 	return Value{NameT, emptys, zeroi, zerof, Name{identifier}, falseb, Function{}, emptyl, emptym}
 }
 
 func NewBoolean(value bool) Value {
+	emptyl := List{[]Value{}}
+	emptym := Mapping{map[string]Value{}}
 	return Value{BooleanT, emptys, zeroi, zerof, Name{}, BooleanLiteral{value}, Function{}, emptyl, emptym}
 }
 
@@ -47,6 +55,8 @@ func NewCallableFunction(name string, argNames []string, fn Builtin) Value {
 	for i, arg := range argNames {
 		names[i] = Name{arg}
 	}
+	emptyl := List{[]Value{}}
+	emptym := Mapping{map[string]Value{}}
 	return Value{FunctionT, emptys, zeroi, zerof, Name{}, falseb, Function{Name{name}, names, SExpression{}, true, fn}, emptyl, emptym}
 }
 
@@ -55,14 +65,20 @@ func NewFunction(name string, argNames []string, body interface{}) Value {
 	for i, arg := range argNames {
 		names[i] = Name{arg}
 	}
+	emptyl := List{[]Value{}}
+	emptym := Mapping{map[string]Value{}}
 	return Value{FunctionT, emptys, zeroi, zerof, Name{}, falseb, Function{Name{name}, names, body, false, nil}, emptyl, emptym}
 }
 
 func NewList() Value {
+	emptyl := List{[]Value{}}
+	emptym := Mapping{map[string]Value{}}
 	return Value{ListT, emptys, zeroi, zerof, Name{}, falseb, Function{}, emptyl, emptym}
 }
 
 func NewMap() Value {
+	emptyl := List{[]Value{}}
+	emptym := Mapping{map[string]Value{}}
 	return Value{MapT, emptys, zeroi, zerof, Name{}, falseb, Function{}, emptyl, emptym}
 }
 
@@ -111,6 +127,28 @@ func Wrap(thing interface{}) (Value, error) {
 			return NewName("true"), nil
 		}
 		return NewName("false"), nil
+	case []interface{}:
+		list := NewList()
+		thingList := thing.([]interface{})
+		for _, v := range thingList {
+			wrapped, err := Wrap(v)
+			if err != nil {
+				return list, err
+			}
+			list.List.Data = append(list.List.Data, wrapped)
+		}
+		return list, nil
+	case map[string]interface{}:
+		mapping := NewMap()
+		thingMap := thing.(map[string]interface{})
+		for k, v := range thingMap {
+			wrapped, err := Wrap(v)
+			if err != nil {
+				return mapping, err
+			}
+			mapping.Map.Data[k] = wrapped
+		}
+		return mapping, nil
 	}
 	return Value{}, errors.New("Cannot wrap values of the type of the argument provided.")
 }
