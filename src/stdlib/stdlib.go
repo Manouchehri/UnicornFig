@@ -32,6 +32,8 @@ var StandardLibrary uni.Environment = uni.Environment{
 	"tail":     uni.NewCallableFunction("tail", []string{"_list_"}, SLIB_Tail),
 	"append":   uni.NewCallableFunction("append", []string{"_list_", "_value_"}, SLIB_Append),
 	"size":     uni.NewCallableFunction("size", []string{"_list_"}, SLIB_Size),
-	"mapping":  uni.NewCallableFunction("mapping", []string{}, SLIB_Map),
+	"mapping":  uni.NewCallableFunction("mapping", []string{"_key1_", "_value1_"}, SLIB_Map),
+	"assoc":    uni.NewCallableFunction("assoc", []string{"_map_", "_key1_", "_value1_"}, SLIB_Associate),
+	"get":      uni.NewCallableFunction("get", []string{"_map_", "_key_"}, SLIB_GetMap),
 	"print":    uni.NewCallableFunction("print", []string{"msg"}, SLIB_Print),
 }

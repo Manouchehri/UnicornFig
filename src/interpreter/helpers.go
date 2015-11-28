@@ -88,7 +88,11 @@ func Unwrap(value Value) interface{} {
 		}
 		return values
 	case MapT:
-		return value.Map.Data
+		unwrapped := make(map[string]interface{})
+		for key, val := range value.Map.Data {
+			unwrapped[key] = Unwrap(val)
+		}
+		return unwrapped
 	}
 	return nil
 }
