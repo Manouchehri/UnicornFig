@@ -95,6 +95,7 @@ func TestTransition(t *testing.T) {
 		{OPEN, STRING1, "'", DoNothing, []Token{START_STRING}},
 		{OPEN, NUMBER, "0", DoNothing, []Token{START_NUMBER, "0"}},
 		{OPEN, OPEN, ")", Return, []Token{END_SEXP}},
+		{OPEN, NAME, "+", DoNothing, []Token{START_NAME, "+"}},
 		{STRING1, OPEN, "'", DoNothing, []Token{END_STRING}},
 		{STRING2, OPEN, "\"", DoNothing, []Token{END_STRING}},
 		{STRING1, STRING1, "\"", DoNothing, []Token{"\""}},
@@ -102,6 +103,8 @@ func TestTransition(t *testing.T) {
 		{COMMENT, OPEN, "\n", DoNothing, []Token{END_COMMENT}},
 		{NUMBER, OPEN, "\t", DoNothing, []Token{END_NUMBER}},
 		{NAME, NAME, "f", DoNothing, []Token{Token("f")}},
+		{NAME, NAME, "?", DoNothing, []Token{Token("?")}},
+		{NAME, OPEN, " ", DoNothing, []Token{END_NAME}},
 	}
 	for _, test := range tests {
 		err, newState, action, tokens := Transition(test.From, test.Input)

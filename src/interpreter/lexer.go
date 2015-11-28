@@ -56,7 +56,7 @@ var TransitionsFromOpen = [...]FSMTransition{
 	{"\"", DoNothing, STRING2, AddToken, START_STRING},
 	{";", DoNothing, COMMENT, AddToken, START_COMMENT},
 	{"[0-9]", DoNothing, NUMBER, AddTokenAndChar, START_NUMBER},
-	{"[a-zA-Z]", DoNothing, NAME, AddTokenAndChar, START_NAME},
+	{"[0-9a-zA-Z!@#$%^&*-_+=:;<,>.?/]", DoNothing, NAME, AddTokenAndChar, START_NAME},
 	{"\\)", Return, OPEN, AddToken, END_SEXP},
 }
 
@@ -88,7 +88,7 @@ var TransitionsFromNumber = [...]FSMTransition{
 var TransitionsFromName = [...]FSMTransition{
 	{"\\s", DoNothing, OPEN, AddToken, END_NAME},
 	{"\\)", DoNothing, OPEN, AddTokenAndEndSexp, END_NAME},
-	{"[0-9a-zA-Z_]", DoNothing, NAME, AddChar, NO_TOKEN},
+	{"[0-9a-zA-Z!@#$%^&*-_+=:;<,>.?/]", DoNothing, NAME, AddChar, NO_TOKEN},
 }
 
 func Transition(state State, read string) (error, State, RecursiveAction, []Token) {
