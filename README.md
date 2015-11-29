@@ -17,6 +17,7 @@ The project consists, really, of two parts. **Unicorn** is the name given to the
 ## How do I get started?
 
 The first thing to do is of course to clone the repository and build the interpreter.
+Of course, to do this, you will need to have [git](https://www.git-scm.com/) and [Go](https://golang.org/dl/) installed on your computer.
 
 ```bash
 git clone https://github.com/redwire/UnicornFig.git
