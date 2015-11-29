@@ -84,3 +84,14 @@ func SLIB_LessOrEqual(arguments ...interface{}) (uni.Value, error) {
 	result := arguments[0].(int64) >= arguments[1].(int64)
 	return ToBoolKeyword(result), nil
 }
+
+func SLIB_Modulo(arguments ...interface{}) (uni.Value, error) {
+	if len(arguments) < 2 {
+		return uni.Value{}, errors.New("Modulo function expects two or more arguments.")
+	}
+	result := arguments[0].(int64)
+	for i := 1; i < len(arguments); i++ {
+		result = result % arguments[i].(int64)
+	}
+	return uni.NewInteger(result), nil
+}

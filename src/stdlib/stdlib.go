@@ -12,6 +12,7 @@ var StandardLibrary uni.Environment = uni.Environment{
 	"/":        uni.NewCallableFunction("/", []string{"a", "b"}, SLIB_Divide),
 	"+":        uni.NewCallableFunction("+", []string{"a", "b"}, SLIB_Add),
 	"-":        uni.NewCallableFunction("-", []string{"a", "b"}, SLIB_Subtract),
+	"%":        uni.NewCallableFunction("%", []string{"a", "b"}, SLIB_Modulo),
 	"concat":   uni.NewCallableFunction("concat", []string{"s1", "s2"}, SLIB_Concatenate),
 	"substr":   uni.NewCallableFunction("substr", []string{"str", "start", "end"}, SLIB_Substring),
 	"index":    uni.NewCallableFunction("index", []string{"s1", "s2"}, SLIB_Index),
