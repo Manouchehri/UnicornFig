@@ -7,9 +7,9 @@ import (
 
 func ToBoolKeyword(value bool) uni.Value {
 	if value {
-		return uni.NewName("true")
+		return uni.NewBoolean(true)
 	} else {
-		return uni.NewName("false")
+		return uni.NewBoolean(false)
 	}
 }
 
