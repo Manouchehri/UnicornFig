@@ -6,7 +6,7 @@ import (
 	"regexp"
 )
 
-// States for the Parser FSM
+// States for the Lexer FSM
 
 type State int
 
@@ -23,6 +23,12 @@ const (
 	NAME    State = iota
 )
 
+/**
+ * When lexing a program, certain characters need to be treated as terminators for a particular type of value
+ * but should also include that value.  The following instructions dictate what tokens should be added as the
+ * FSM moves from character to character through a program.
+ */
+
 type Instruction int
 
 const (
@@ -33,6 +39,12 @@ const (
 	AddTokenAndEndSexp Instruction = iota
 )
 
+/**
+ * The lexer will recurse when S-Expressions are encountered, so that the FSM can essentially be restarted
+ * in a nested S-Expression without having to actually start and manage a new FSM.  These directives tell
+ * the lexer when it should recurse, return from a recursed lexing, or continue normally.
+ */
+
 type RecursiveAction int
 
 const (
@@ -40,6 +52,10 @@ const (
 	Recurse   RecursiveAction = iota
 	Return    RecursiveAction = iota
 )
+
+/**
+ * The following are essentially transition tables for the FSM.
+ */
 
 type FSMTransition struct {
 	ReadMatch string
@@ -91,6 +107,9 @@ var TransitionsFromName = [...]FSMTransition{
 	{"[0-9a-zA-Z!@#$%^&*-_+=:;<,>.?/]", DoNothing, NAME, AddChar, NO_TOKEN},
 }
 
+/**
+ * Determine what state to transition into based on the current state and the next characters in the program.
+ */
 func Transition(state State, read string) (error, State, RecursiveAction, []Token) {
 	var testTransitions []FSMTransition
 	switch state {
@@ -135,6 +154,9 @@ func Transition(state State, read string) (error, State, RecursiveAction, []Toke
 	return errors.New(errMsg), ERROR, DoNothing, []Token{}
 }
 
+/**
+ * Lex a program to produce a sequence of tokens and the number of characters read.
+ */
 func Lex(program string, startIndex int) ([]Token, int) {
 	tokens := make([]Token, 0)
 	currentState := OPEN

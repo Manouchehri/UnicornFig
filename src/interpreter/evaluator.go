@@ -8,25 +8,18 @@ import (
 // A type that contains information about values in a given scope
 type Environment map[string]Value
 
+/**
+ * Simply determines if an S-Expression is one of the supported special forms by checking
+ * the name of the function/form to evaulate.
+ */
 func isSpecialForm(formName string) bool {
 	return formName == "define" || formName == "if" || formName == "function"
 }
 
 /**
- * Creates an environment consisting of only keys (and their corresponding values)
- * that are in env1 and not in env2.
+ * Evaluate a `define` form to extract the names of variables to assign to, evaluate values,
+ * and update the environment.
  */
-func environmentDifference(env1, env2 Environment) Environment {
-	diff := Environment{}
-	for key, value := range env1 {
-		_, found := env2[key]
-		if !found {
-			diff[key] = value
-		}
-	}
-	return diff
-}
-
 func EvaluateDefine(sexp SExpression, env Environment) (error, Value, Environment) {
 	// Each value is (or should be) an S-Expression with a name to assign to and a value to evalute
 	var lastValue Value
@@ -53,6 +46,10 @@ func EvaluateDefine(sexp SExpression, env Environment) (error, Value, Environmen
 	return nil, lastValue, env
 }
 
+/**
+ * Evaluate an `if` form to extract and evaluate the condition and then evaluate the appropriate
+ * branch expression.
+ */
 func EvaluateIf(sexp SExpression, env Environment) (error, Value, Environment) {
 	if len(sexp.Values) != 3 {
 		return errors.New("If expects one condition and two branches."), Value{}, env
@@ -71,6 +68,9 @@ func EvaluateIf(sexp SExpression, env Environment) (error, Value, Environment) {
 	}
 }
 
+/**
+ * Evaluate a `function` form to extract the list of argument names and the body expression.
+ */
 func EvaluateFunction(sexp SExpression, env Environment) (error, Value, Environment) {
 	if len(sexp.Values) != 2 {
 		errMsg := "Function declarations expect one S-Expression with a set of argument names and one with a body."
@@ -106,6 +106,9 @@ func EvaluateFunction(sexp SExpression, env Environment) (error, Value, Environm
 	return nil, newFn, env
 }
 
+/**
+ * Once a special form is encountered, determine which one it is and call the appropriate evaluator.
+ */
 func EvaluateSpecialForm(sexp SExpression, env Environment) (error, Value, Environment) {
 	switch sexp.FormName.Contained {
 	case "define":
@@ -118,6 +121,9 @@ func EvaluateSpecialForm(sexp SExpression, env Environment) (error, Value, Envir
 	return errors.New("Unrecognized special form " + sexp.FormName.Contained), Value{}, env
 }
 
+/**
+ * Evaluate a value by resolving a name to its associated value or just returning the value itself.
+ */
 func EvaluateValue(value Value, env Environment) (error, Value, Environment) {
 	if value.Type == NameT {
 		varName := value.Name.Contained
@@ -133,6 +139,10 @@ func EvaluateValue(value Value, env Environment) (error, Value, Environment) {
 	}
 }
 
+/**
+ * Evaluate an S-Expression by evaluating the first name as either a function name or a special form
+ * and either applying the successive values as arguments to the function or having the special form handled.
+ */
 func EvaluateSexp(sexp SExpression, env Environment) (error, Value, Environment) {
 	fnName := sexp.FormName.Contained
 	function, found := env[fnName]
@@ -154,6 +164,10 @@ func EvaluateSexp(sexp SExpression, env Environment) (error, Value, Environment)
 	return err, value, env
 }
 
+/**
+ * The catch-all evaluate function that determines the type of its contents and invokes the appropriate
+ * evaluator for that type.
+ */
 func Evaluate(thing interface{}, env Environment) (error, Value, Environment) {
 	switch thing.(type) {
 	case Value:
@@ -170,6 +184,12 @@ func Evaluate(thing interface{}, env Environment) (error, Value, Environment) {
 	}
 }
 
+/**
+ * Apply a function to supplied arguments.  If the function was defined in fig code, then the body expression
+ * will be evaluated with a new scope relative to the function.
+ * The scope will be augmented with the function's argument names so that they are available in deeper
+ * scopes.
+ */
 func Apply(fn Function, arguments ...Value) (Value, error) {
 	for i := 0; i < len(fn.ArgumentNames); i++ {
 		if i >= len(arguments) {
@@ -189,12 +209,6 @@ func Apply(fn Function, arguments ...Value) (Value, error) {
 	} else {
 		err, computedValue, _ = Evaluate(fn.Body, fn.Scope)
 	}
-	/*
-		envDiff := environmentDifference(newEnv, localScope)
-		for newKey, newValue := range envDiff {
-			env[newKey] = newValue
-		}
-	*/
 	if err != nil {
 		return Value{}, err
 	}

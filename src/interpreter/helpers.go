@@ -11,6 +11,10 @@ var (
 	falseb = BooleanLiteral{false}
 )
 
+/**
+ * Shorthand functions to easily create instances of supported types.
+ */
+
 func NewString(str string) Value {
 	emptyl := List{[]Value{}}
 	emptym := Mapping{map[string]Value{}}
@@ -82,6 +86,9 @@ func NewMap() Value {
 	return Value{MapT, emptys, zeroi, zerof, Name{}, falseb, Function{}, emptyl, emptym}
 }
 
+/**
+ * Unwrap a value to make the contents (stuff Go can compute with) available to a function.
+ */
 func Unwrap(value Value) interface{} {
 	switch value.Type {
 	case StringT:
@@ -113,6 +120,9 @@ func Unwrap(value Value) interface{} {
 	return nil
 }
 
+/**
+ * Wrap a value back into one of Unicorn's Value instances.
+ */
 func Wrap(thing interface{}) (Value, error) {
 	switch thing.(type) {
 	case int64:

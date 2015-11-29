@@ -6,10 +6,6 @@ import (
 	"strings"
 )
 
-type SyntaxTree struct {
-	Root SExpression
-}
-
 type SimpleParser func([]Token, int) (error, Value, int)
 
 var SimpleParsersTable = map[Token]SimpleParser{
@@ -18,6 +14,9 @@ var SimpleParsersTable = map[Token]SimpleParser{
 	START_NAME:   ParseName,
 }
 
+/**
+ * Parse a name that refers to a value.
+ */
 func ParseName(tokens []Token, i int) (error, Value, int) {
 	value := Value{}
 	value.Type = UnassignedT
@@ -40,6 +39,9 @@ func ParseName(tokens []Token, i int) (error, Value, int) {
 	return nil, value, i + 1
 }
 
+/**
+ * Parse a number such as an integer or a floating point number.
+ */
 func ParseNumber(tokens []Token, i int) (error, Value, int) {
 	value := Value{}
 	value.Type = UnassignedT
@@ -69,6 +71,9 @@ func ParseNumber(tokens []Token, i int) (error, Value, int) {
 	return nil, value, i + 1
 }
 
+/**
+ * Parse a comment by basically just ignoring it and returning an unsassigned value.
+ */
 func ParseComment(tokens []Token, i int) (error, Value, int) {
 	value := Value{}
 	value.Type = UnassignedT
@@ -82,6 +87,9 @@ func ParseComment(tokens []Token, i int) (error, Value, int) {
 	return nil, value, i + 1
 }
 
+/**
+ * Parse a string. The lexer has already handled double vs single quoted strings for us.
+ */
 func ParseString(tokens []Token, i int) (error, Value, int) {
 	value := Value{}
 	value.Type = UnassignedT
@@ -104,6 +112,10 @@ func ParseString(tokens []Token, i int) (error, Value, int) {
 	return nil, value, i + 1
 }
 
+/**
+ * Parse an S-Expression, which expects to start with a name for a special form or a Function
+ * and then contain some number of expressions, which may themselves be S-Expressions.
+ */
 func ParseSExpression(tokens []Token, i int) (error, SExpression, int) {
 	sexp := SExpression{}
 	sexp.Type = SExpressionT
@@ -144,6 +156,11 @@ func ParseSExpression(tokens []Token, i int) (error, SExpression, int) {
 	return nil, sexp, i + 1
 }
 
+/**
+ * The catch-all parse function steps through the lex of the program provided and determines which
+ * type parser to invoke for each START token encountered.
+ * At the end, we get a list of "stuff" which are either S-Expressions or values.
+ */
 func Parse(tokens []Token) (error, []interface{}) {
 	parsedForms := make([]interface{}, 0)
 	for index := 0; index < len(tokens); {
