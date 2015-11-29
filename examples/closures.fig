@@ -1,0 +1,16 @@
+; Fig supports the creation of closures by creating functions with their own
+; lexical scope.
+
+(define
+    (multiplier (function (n)
+        (function (m)
+            (* n m)))))
+
+; When we invoke the multiplier function to create a closure, the function
+; created by multiplier retains the value of "n" in its scope.
+
+(define (doubler (multiplier 2)))
+(define (tripler (multiplier 3)))
+
+(print (doubler 32)) ; Prints 64
+(print (tripler 3))  ; Prints 9

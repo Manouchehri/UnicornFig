@@ -1,0 +1,41 @@
+; Here we create some of the most essential functions for functional
+; programming.
+
+(define
+    (extend (function (ls1 ls2)
+        (if (zero? (size ls2))
+            ls1
+            (extend (append ls1 (first ls2))
+                    (tail ls2)))))
+    (map (function (f ls)
+        (if (zero? (size ls))
+            (list)
+            (extend (list (f (first ls)))
+                    (map f (tail ls))))))
+    (reduce (function (f init ls)
+        (if (zero? (size ls))
+            init
+            (reduce f
+                    (f init (first ls))
+                    (tail ls)))))
+    (filter (function (predicate ls)
+        (if (zero? (size ls))
+            (list)
+            (if (predicate (first ls))
+                (extend (list (first ls))
+                        (filter predicate (tail ls)))
+                (filter predicate (tail ls)))))))
+
+
+(define
+    (square (function (x) (* x x)))
+    (ls (list 1 2 3 4 5)))
+
+;; Prints [1 4 9 16 25]
+(print (map square ls))
+
+;; Prints [4 5]
+(print (filter (function (n) (> n 3)) ls))
+
+;; Prints 15
+(print (reduce + 0 ls))

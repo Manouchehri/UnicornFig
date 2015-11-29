@@ -1,0 +1,22 @@
+; The four basic arithmetic operations are supported, along with modulo.
+; Note that each of these functions accept two or more arguments, so
+; (+ 1 2 3 4) is the same as 1 + 2 + 3 + 4 and so on for the other functions.
+
+(print (+ 1 1 2))  ; Prints 4
+(print (- 3 3 1))  ; Prints -1 
+(print (* 2 11))   ; Prints 22
+(print (/ 110 10)) ; Prints 11
+(print (% 3 2))    ; Prints 1
+
+; The following comparison functions are also available.
+; Negation is demonstrated in examples/bools.fig.
+
+(print (> 1 2))    ; Prints false
+(print (<= 2 2))   ; Prints true
+(print (>= 103 4)) ; Prints true
+(print (< 10 11))  ; Prints true
+
+; There is also a convenient function for testing if a number is 0.
+; The value of pi is also stored in a globally-available variable.
+
+(print (zero? (- pi pi))) ; Prints true

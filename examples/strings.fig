@@ -1,0 +1,29 @@
+; Strings can be contained between "double quotes" or 'single quotes'.
+; Also, one type of string can contain the other.
+; So "Hi 'Bob'!" and 'Hey, "Alice"!' are both valid strings.
+
+; You can concatenate (add) strings together with concat.
+; the function accepts any number of string arguments.
+
+(print (concat "Hello," " " "world!")) ; Prints "Hello, world!" without quotes.
+
+; You can also take a substring of a string from a start and end index using substr.
+; Note that the start index is inclusive and the end index is not inclusive.
+
+(print (substr "Hello world" 1 5)) ; Prints "ello" without quotes.
+(print (substr "Hi!" 0 3))         ; Prints "Hi!" without quotes.
+
+; The length function calculates the length of a string.
+
+(print (length "test")) ; Prints 4
+
+; The index function gets the index at which a substring can be found in
+; another string starting from the left. It outputs -1 if the substring isn't found.
+
+(print (index "Hey there!" "the")) ; Prints 4
+
+; You can easily convert strings to all uppercase or all lowercase with
+; the upcase and downcase functions.
+
+(print (upcase "Hello world")) ; Prints "HELLO WORLD" without quotes.
+(print (downcase "WOW!"))      ; Prints "wow!" without quotes.

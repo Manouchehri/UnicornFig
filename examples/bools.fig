@@ -1,0 +1,27 @@
+; As shown in examples/math.go, functions exist that produce a boolean result
+; such as the comparison functions. There is no not-equal function in Fig, however
+; a negation function, not, does exist.
+
+(print (not (= 1 2))) ; Prints true
+
+; You can also check boolean values for equality.
+
+(print (= true false)) ; Prints false
+
+; There are also functions to compute disjunctions and conjunctions (and & or).
+; Both accept any number of boolean values and short circuit (i.e. stop evaluating
+; arguments) when it's no longer necessary to.
+
+;; Prints false
+;; Stops checking arguments after the first false.
+(print (and (not (zero? 1))
+            false
+            (> 2 1)
+            true))
+
+;; Prints true
+;; Stops checking arguments after the first true.
+(print (or false
+           false
+           (zero? 0)
+           (= 1 2)))

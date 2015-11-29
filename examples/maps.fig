@@ -1,0 +1,20 @@
+; Maps or mappings are the equivalent of dictionaries (dict) in Python
+; or objects in Javascript. They map strings to any value, including
+; lists or other maps.
+
+;; Prints map[hello:2 world:3.14 !:[1 2 3 4]]
+(print (mapping 
+    "hello" 2
+    "world" 3.14
+    "!" (list 1 2 3 4)))
+
+; You can also associate new key-value pairs together much like appending
+; items to a list. The first argument to assoc must be a map, and then
+; an even number of arguments can be supplied in the form key1 value1 key2 value2.
+
+;; Prints map[a:1 b:2 c:3.14 d:Hey!]
+(print (assoc (mapping "a" 1) "b" 2 "c" 3.14 "d" "Hey!"))
+
+; You can extract the value contained in a map associated with a key using get.
+
+(print (get (mapping "a" 1 "b" 0) "a")) ; Prints 1

@@ -1,0 +1,50 @@
+; You can define variables in the global scope using define like so.
+; Note that values are created and evaluated one at a time, so it's possible
+; to refer to previously assigned variables in definitions that follow.
+
+; The define form is structured as
+; (define (varname1 expression) (varname2 expression) ...)
+
+(define (x 1)
+        (y 2.5)
+        (hi "there")
+        (ls (list x 2 3 4)))
+
+(print x) ; Prints 1
+(print y) ; Prints 2.5
+(print (first ls)) ; Prints 1
+
+
+; You can have expressions evaluated conditionally as follows.
+; Note that if the condition expression evaluates to true,
+; then only the first (then-expression) is evaluated and returned,
+; otherwise the second (else-expression) is evaluated and returned.
+; You can, of course, nest conditions as much as you want.
+; The if form is structured as
+; (if condition-expression then-expression else-expression)
+
+;; Prints "test" without quotes.
+(print
+    (if (and (= 1 1) (or (zero? 3) (= 2 (- 3 1))))
+        "test"
+        (if (zero? 3)
+            "test2"
+            (- 100 99))))
+
+
+; You can define functions using the function form, which is structured as
+; (function (arg1 arg2 ...) body-expression)
+; Notice that argument names are contained in parens and can be as long as you
+; like. If your function accepts no arguments, you must write (_).
+
+; You can read more about the capabilities of functions in
+; examples/recursion.fig and examples/closures.fig.
+
+(define
+    (square (function (n)
+        (* n n)))
+    (three (function (_)
+        3)))
+
+;; Prints 9
+(print (square (three)))
