@@ -147,6 +147,9 @@ func EvaluateSexp(sexp SExpression, env Environment) (error, Value, Environment)
 		}
 		arguments = append(arguments, value)
 	}
+	for k, v := range env {
+		function.Function.Scope[k] = v
+	}
 	value, err := Apply(function.Function, arguments...)
 	return err, value, env
 }
