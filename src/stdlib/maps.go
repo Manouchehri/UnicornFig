@@ -5,13 +5,13 @@ import (
 	"errors"
 )
 
-func SLIB_Map(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
+func SLIB_Map(arguments ...interface{}) (uni.Value, error) {
 	mapping := uni.NewMap()
 	if len(arguments) == 0 {
-		return nil, mapping, env
+		return mapping, nil
 	}
 	if len(arguments)%2 == 1 {
-		return errors.New("Must have an even number of arguments to create a map."), mapping, env
+		return mapping, errors.New("Must have an even number of arguments to create a map.")
 	}
 	for i := 0; i < len(arguments); i += 2 {
 		key := arguments[i]
@@ -20,33 +20,33 @@ func SLIB_Map(env uni.Environment, arguments ...interface{}) (error, uni.Value, 
 		case string:
 			break
 		default:
-			return errors.New("All keys must be strings."), mapping, env
+			return mapping, errors.New("All keys must be strings.")
 		}
 		wrapped, err := uni.Wrap(value)
 		if err != nil {
-			return err, mapping, env
+			return mapping, err
 		}
 		mapping.Map.Data[key.(string)] = wrapped
 	}
-	return nil, mapping, env
+	return mapping, nil
 }
 
-func SLIB_Associate(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
+func SLIB_Associate(arguments ...interface{}) (uni.Value, error) {
 	mapping := uni.NewMap()
 	if len(arguments) <= 1 || len(arguments)%2 == 0 {
-		return errors.New("Associate function expects a map and at least one key-value pair of arguments."), mapping, env
+		return mapping, errors.New("Associate function expects a map and at least one key-value pair of arguments.")
 	}
 	// Recreate the exsting map
 	switch arguments[0].(type) {
 	case map[string]interface{}:
 		break
 	default:
-		return errors.New("Associate function expects its first argument to be a map."), mapping, env
+		return mapping, errors.New("Associate function expects its first argument to be a map.")
 	}
 	for k, v := range arguments[0].(map[string]interface{}) {
 		wrapped, err := uni.Wrap(v)
 		if err != nil {
-			return err, mapping, env
+			return mapping, err
 		}
 		mapping.Map.Data[k] = wrapped
 	}
@@ -58,35 +58,35 @@ func SLIB_Associate(env uni.Environment, arguments ...interface{}) (error, uni.V
 		case string:
 			break
 		default:
-			return errors.New("Associate function expects all the new keys to be strings."), mapping, env
+			return mapping, errors.New("Associate function expects all the new keys to be strings.")
 		}
 		wrapped, err := uni.Wrap(v)
 		if err != nil {
-			return err, mapping, env
+			return mapping, err
 		}
 		mapping.Map.Data[k.(string)] = wrapped
 	}
-	return nil, mapping, env
+	return mapping, nil
 }
 
-func SLIB_GetMap(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
+func SLIB_GetMap(arguments ...interface{}) (uni.Value, error) {
 	if len(arguments) != 2 {
-		return errors.New("Get function expects a map and a key argument."), uni.Value{}, env
+		return uni.Value{}, errors.New("Get function expects a map and a key argument.")
 	}
 	switch arguments[0].(type) {
 	case map[string]interface{}:
 		break
 	default:
-		return errors.New("Get function expects first argument to be a map."), uni.Value{}, env
+		return uni.Value{}, errors.New("Get function expects first argument to be a map.")
 	}
 	switch arguments[1].(type) {
 	case string:
 		break
 	default:
-		return errors.New("Get function expects second argument to be a string key."), uni.Value{}, env
+		return uni.Value{}, errors.New("Get function expects second argument to be a string key.")
 	}
 	mapping := arguments[0].(map[string]interface{})
 	key := arguments[1].(string)
 	wrapped, err := uni.Wrap(mapping[key])
-	return err, wrapped, env
+	return wrapped, err
 }

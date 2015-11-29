@@ -99,7 +99,11 @@ func EvaluateFunction(sexp SExpression, env Environment) (error, Value, Environm
 			argumentNames = append(argumentNames, argumentList.Values[i].(Value).Name.Contained)
 		}
 	}
-	return nil, NewFunction("tempname", argumentNames, sexp.Values[1]), env
+	newFn := NewFunction("tempname", argumentNames, sexp.Values[1])
+	for k, v := range env {
+		newFn.Function.Scope[k] = v
+	}
+	return nil, newFn, env
 }
 
 func EvaluateSpecialForm(sexp SExpression, env Environment) (error, Value, Environment) {
@@ -143,7 +147,8 @@ func EvaluateSexp(sexp SExpression, env Environment) (error, Value, Environment)
 		}
 		arguments = append(arguments, value)
 	}
-	return Apply(env, function.Function, arguments...)
+	value, err := Apply(function.Function, arguments...)
+	return err, value, env
 }
 
 func Evaluate(thing interface{}, env Environment) (error, Value, Environment) {
@@ -162,38 +167,34 @@ func Evaluate(thing interface{}, env Environment) (error, Value, Environment) {
 	}
 }
 
-func Apply(env Environment, fn Function, arguments ...Value) (error, Value, Environment) {
-	// Check if the function maps to a builtin that can be executed as Go code.
-	// Create a local scope
-	localScope := Environment{}
-	for key, value := range env {
-		localScope[key] = value
-	}
+func Apply(fn Function, arguments ...Value) (Value, error) {
 	for i := 0; i < len(fn.ArgumentNames); i++ {
 		if i >= len(arguments) {
-			return errors.New("Not enough arguments passed to " + fn.FunctionName.Contained), Value{}, env
+			return Value{}, errors.New("Not enough arguments passed to " + fn.FunctionName.Contained)
 		}
-		localScope[fn.ArgumentNames[i].Contained] = arguments[i]
+		fn.Scope[fn.ArgumentNames[i].Contained] = arguments[i]
 	}
 	var err error
 	var computedValue Value
-	var newEnv Environment
+	//var newEnv Environment
 	if fn.IsCallable {
 		goValues := make([]interface{}, len(arguments))
 		for i, arg := range arguments {
 			goValues[i] = Unwrap(arg)
 		}
-		err, computedValue, newEnv = fn.Call(localScope, goValues...)
+		computedValue, err = fn.Call(goValues...)
 	} else {
-		err, computedValue, newEnv = Evaluate(fn.Body, localScope)
+		err, computedValue, _ = Evaluate(fn.Body, fn.Scope)
 	}
-	envDiff := environmentDifference(newEnv, localScope)
-	for newKey, newValue := range envDiff {
-		env[newKey] = newValue
-	}
+	/*
+		envDiff := environmentDifference(newEnv, localScope)
+		for newKey, newValue := range envDiff {
+			env[newKey] = newValue
+		}
+	*/
 	if err != nil {
-		return err, Value{}, env
+		return Value{}, err
 	}
-	err, computedValue, env = EvaluateValue(computedValue, env)
-	return err, computedValue, env
+	err, computedValue, _ = EvaluateValue(computedValue, fn.Scope)
+	return computedValue, err
 }

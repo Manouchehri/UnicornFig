@@ -13,26 +13,26 @@ func ToBoolKeyword(value bool) uni.Value {
 	}
 }
 
-func SLIB_Negate(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
+func SLIB_Negate(arguments ...interface{}) (uni.Value, error) {
 	if len(arguments) != 1 {
-		return errors.New("Negation function expects exactly one argument."), uni.Value{}, env
+		return uni.Value{}, errors.New("Negation function expects exactly one argument.")
 	}
 	value := arguments[0].(bool)
-	return nil, ToBoolKeyword(!value), env
+	return ToBoolKeyword(!value), nil
 }
 
-func SLIB_IsZero(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
+func SLIB_IsZero(arguments ...interface{}) (uni.Value, error) {
 	if len(arguments) != 1 {
-		return errors.New("Zero predicate function expects exactly one argument."), uni.Value{}, env
+		return uni.Value{}, errors.New("Zero predicate function expects exactly one argument.")
 	}
 	value := arguments[0].(int64)
 	isZero := value == int64(0)
-	return nil, ToBoolKeyword(isZero), env
+	return ToBoolKeyword(isZero), nil
 }
 
-func SLIB_And(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
+func SLIB_And(arguments ...interface{}) (uni.Value, error) {
 	if len(arguments) < 2 {
-		return errors.New("And function expects two or more arguments."), uni.Value{}, env
+		return uni.Value{}, errors.New("And function expects two or more arguments.")
 	}
 	result := arguments[0].(bool)
 	// Compound the values provided to the function.
@@ -40,12 +40,12 @@ func SLIB_And(env uni.Environment, arguments ...interface{}) (error, uni.Value, 
 	for i := 1; i < len(arguments) && result; i++ {
 		result = result && arguments[i].(bool)
 	}
-	return nil, ToBoolKeyword(result), env
+	return ToBoolKeyword(result), nil
 }
 
-func SLIB_Or(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
+func SLIB_Or(arguments ...interface{}) (uni.Value, error) {
 	if len(arguments) < 2 {
-		return errors.New("And function expects two or more arguments."), uni.Value{}, env
+		return uni.Value{}, errors.New("And function expects two or more arguments.")
 	}
 	result := arguments[0].(bool)
 	// We can short circuit as soon as `true` is encountered.
@@ -55,12 +55,12 @@ func SLIB_Or(env uni.Environment, arguments ...interface{}) (error, uni.Value, u
 			break
 		}
 	}
-	return nil, ToBoolKeyword(result), env
+	return ToBoolKeyword(result), nil
 }
 
-func SLIB_Equal(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
+func SLIB_Equal(arguments ...interface{}) (uni.Value, error) {
 	if len(arguments) < 2 {
-		return errors.New("Equal function expects two or more arguments."), uni.Value{}, env
+		return uni.Value{}, errors.New("Equal function expects two or more arguments.")
 	}
 	result := true
 	switch arguments[0].(type) {
@@ -85,5 +85,5 @@ func SLIB_Equal(env uni.Environment, arguments ...interface{}) (error, uni.Value
 			result = value == arguments[i].(bool)
 		}
 	}
-	return nil, ToBoolKeyword(result), env
+	return ToBoolKeyword(result), nil
 }

@@ -80,7 +80,7 @@ type SExpression struct {
 
 // Functions
 
-type Builtin func(Environment, ...interface{}) (error, Value, Environment)
+type Builtin func(...interface{}) (Value, error)
 
 /**
  * Represents both user-defined functions, which are built on top of builtins,
@@ -93,14 +93,15 @@ type Function struct {
 	ArgumentNames []Name
 	Body          interface{} // Can be a Value or an S-Expression
 	IsCallable    bool
+	Scope         Environment
 	Callable      Builtin
 }
 
-func (fn Function) Call(env Environment, unwrapped ...interface{}) (error, Value, Environment) {
+func (fn Function) Call(unwrapped ...interface{}) (Value, error) {
 	if !fn.IsCallable {
-		return errors.New("Not a callable function"), Value{}, Environment{}
+		return Value{}, errors.New("Not a callable function")
 	} else {
-		return (fn.Callable)(env, unwrapped...)
+		return (fn.Callable)(unwrapped...)
 	}
 }
 
@@ -127,50 +128,6 @@ type List struct {
 
 type Mapping struct {
 	Data map[string]Value
-}
-
-/**
- * Special forms
- */
-
-type SpecialForm interface {
-	Form() SpecialFormType
-}
-
-type SpecialFormType int
-
-const (
-	DefinitionFormT SpecialFormType = iota
-	FunctionFormT   SpecialFormType = iota
-	ConditionFormT  SpecialFormType = iota
-)
-
-type DefinitionForm struct {
-	Definitions []SExpression
-}
-
-type FunctionForm struct {
-	Name      Name
-	Arguments SExpression
-	Body      SExpression
-}
-
-type ConditionForm struct {
-	Condition SExpression
-	Branch1   SExpression
-	Branch2   SExpression
-}
-
-func (df DefinitionForm) Form() SpecialFormType {
-	return DefinitionFormT
-}
-
-func (ff FunctionForm) Form() SpecialFormType {
-	return FunctionFormT
-}
-
-func (cf ConditionForm) Form() SpecialFormType {
-	return ConditionFormT
 }
 
 /**

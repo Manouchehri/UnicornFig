@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func SLIB_Print(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
+func SLIB_Print(arguments ...interface{}) (uni.Value, error) {
 	fmt.Println(arguments...)
-	return nil, uni.Value{}, env
+	return uni.Value{}, nil
 }

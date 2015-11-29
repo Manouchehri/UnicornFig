@@ -6,57 +6,57 @@ import (
 	"strings"
 )
 
-func SLIB_Concatenate(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
+func SLIB_Concatenate(arguments ...interface{}) (uni.Value, error) {
 	if len(arguments) < 2 {
-		return errors.New("Concatenate function expects two or more arguments."), uni.Value{}, env
+		return uni.Value{}, errors.New("Concatenate function expects two or more arguments.")
 	}
 	result := arguments[0].(string)
 	for i := 1; i < len(arguments); i++ {
 		result += arguments[i].(string)
 	}
-	return nil, uni.NewString(result), env
+	return uni.NewString(result), nil
 }
 
-func SLIB_Substring(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
+func SLIB_Substring(arguments ...interface{}) (uni.Value, error) {
 	if len(arguments) != 3 {
-		return errors.New("Susbtring function expects three arguments."), uni.Value{}, env
+		return uni.Value{}, errors.New("Susbtring function expects three arguments.")
 	}
 	str := arguments[0].(string)
 	start := arguments[1].(int64)
 	end := arguments[2].(int64)
 	if start < 0 {
-		return errors.New("Cannot start a substring at a negative index."), uni.Value{}, env
+		return uni.Value{}, errors.New("Cannot start a substring at a negative index.")
 	}
 	if end > int64(len(str)) {
-		return errors.New("Cannot end a substring past the end of the string's length."), uni.Value{}, env
+		return uni.Value{}, errors.New("Cannot end a substring past the end of the string's length.")
 	}
 	result := str[start:end]
-	return nil, uni.NewString(result), env
+	return uni.NewString(result), nil
 }
 
-func SLIB_Index(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
+func SLIB_Index(arguments ...interface{}) (uni.Value, error) {
 	if len(arguments) != 2 {
-		return errors.New("Index function expects two arguments."), uni.Value{}, env
+		return uni.Value{}, errors.New("Index function expects two arguments.")
 	}
 	first := arguments[0].(string)
 	second := arguments[1].(string)
 	index := strings.Index(first, second)
-	return nil, uni.NewInteger(int64(index)), env
+	return uni.NewInteger(int64(index)), nil
 }
 
-func SLIB_Length(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
+func SLIB_Length(arguments ...interface{}) (uni.Value, error) {
 	length := len(arguments[0].(string))
-	return nil, uni.NewInteger(int64(length)), env
+	return uni.NewInteger(int64(length)), nil
 }
 
-func SLIB_Upcase(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
+func SLIB_Upcase(arguments ...interface{}) (uni.Value, error) {
 	str := arguments[0].(string)
 	str = strings.ToUpper(str)
-	return nil, uni.NewString(str), env
+	return uni.NewString(str), nil
 }
 
-func SLIB_Downcase(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
+func SLIB_Downcase(arguments ...interface{}) (uni.Value, error) {
 	str := arguments[0].(string)
 	str = strings.ToLower(str)
-	return nil, uni.NewString(str), env
+	return uni.NewString(str), nil
 }

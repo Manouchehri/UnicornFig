@@ -5,82 +5,82 @@ import (
 	"errors"
 )
 
-func SLIB_Multiply(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
+func SLIB_Multiply(arguments ...interface{}) (uni.Value, error) {
 	if len(arguments) < 2 {
-		return errors.New("Multiply function expects two or more arguments."), uni.Value{}, env
+		return uni.Value{}, errors.New("Multiply function expects two or more arguments.")
 	}
 	product := arguments[0].(int64)
 	for i := 1; i < len(arguments); i++ {
 		product *= arguments[i].(int64)
 	}
-	return nil, uni.NewInteger(product), env
+	return uni.NewInteger(product), nil
 }
 
-func SLIB_Divide(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
+func SLIB_Divide(arguments ...interface{}) (uni.Value, error) {
 	if len(arguments) < 2 {
-		return errors.New("Divide function expects two or more arguments."), uni.Value{}, env
+		return uni.Value{}, errors.New("Divide function expects two or more arguments.")
 	}
 	result := arguments[0].(int64)
 	for i := 1; i < len(arguments); i++ {
 		next := arguments[i].(int64)
 		if next == 0 {
-			return errors.New("Cannot divide by zero."), uni.Value{}, env
+			return uni.Value{}, errors.New("Cannot divide by zero.")
 		}
 		result /= next
 	}
-	return nil, uni.NewInteger(result), env
+	return uni.NewInteger(result), nil
 }
 
-func SLIB_Add(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
+func SLIB_Add(arguments ...interface{}) (uni.Value, error) {
 	if len(arguments) < 2 {
-		return errors.New("Add function expects two or more arguments."), uni.Value{}, env
+		return uni.Value{}, errors.New("Add function expects two or more arguments.")
 	}
 	sum := arguments[0].(int64)
 	for i := 1; i < len(arguments); i++ {
 		sum += arguments[i].(int64)
 	}
-	return nil, uni.NewInteger(sum), env
+	return uni.NewInteger(sum), nil
 }
 
-func SLIB_Subtract(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
+func SLIB_Subtract(arguments ...interface{}) (uni.Value, error) {
 	if len(arguments) < 2 {
-		return errors.New("Subtract function expects two or more arguments."), uni.Value{}, env
+		return uni.Value{}, errors.New("Subtract function expects two or more arguments.")
 	}
 	result := arguments[0].(int64)
 	for i := 1; i < len(arguments); i++ {
 		result -= arguments[i].(int64)
 	}
-	return nil, uni.NewInteger(result), env
+	return uni.NewInteger(result), nil
 }
 
-func SLIB_GreaterThan(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
+func SLIB_GreaterThan(arguments ...interface{}) (uni.Value, error) {
 	if len(arguments) != 2 {
-		return errors.New("Greater-Than function expects exactly two arguments."), uni.Value{}, env
+		return uni.Value{}, errors.New("Greater-Than function expects exactly two arguments.")
 	}
 	result := arguments[0].(int64) > arguments[1].(int64)
-	return nil, ToBoolKeyword(result), env
+	return ToBoolKeyword(result), nil
 }
 
-func SLIB_LessThan(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
+func SLIB_LessThan(arguments ...interface{}) (uni.Value, error) {
 	if len(arguments) != 2 {
-		return errors.New("Less-Than function expects exactly two arguments."), uni.Value{}, env
+		return uni.Value{}, errors.New("Less-Than function expects exactly two arguments.")
 	}
 	result := arguments[0].(int64) < arguments[1].(int64)
-	return nil, ToBoolKeyword(result), env
+	return ToBoolKeyword(result), nil
 }
 
-func SLIB_GreaterOrEqual(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
+func SLIB_GreaterOrEqual(arguments ...interface{}) (uni.Value, error) {
 	if len(arguments) != 2 {
-		return errors.New("Greater-Than-Or-Equal function expects exactly two arguments."), uni.Value{}, env
+		return uni.Value{}, errors.New("Greater-Than-Or-Equal function expects exactly two arguments.")
 	}
 	result := arguments[0].(int64) >= arguments[1].(int64)
-	return nil, ToBoolKeyword(result), env
+	return ToBoolKeyword(result), nil
 }
 
-func SLIB_LessOrEqual(env uni.Environment, arguments ...interface{}) (error, uni.Value, uni.Environment) {
+func SLIB_LessOrEqual(arguments ...interface{}) (uni.Value, error) {
 	if len(arguments) != 2 {
-		return errors.New("Less-Than-Or-Equal function expects exactly two arguments."), uni.Value{}, env
+		return uni.Value{}, errors.New("Less-Than-Or-Equal function expects exactly two arguments.")
 	}
 	result := arguments[0].(int64) >= arguments[1].(int64)
-	return nil, ToBoolKeyword(result), env
+	return ToBoolKeyword(result), nil
 }

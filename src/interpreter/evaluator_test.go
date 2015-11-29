@@ -44,16 +44,19 @@ func TestEvaluateValue(t *testing.T) {
 }
 
 func TestApply(t *testing.T) {
-	mult := func(env Environment, args ...interface{}) (error, Value, Environment) {
+	mult := func(args ...interface{}) (Value, error) {
 		value := args[0].(int64) * args[1].(int64)
-		return nil, NewInteger(value), env
+		return NewInteger(value), nil
 	}
 	env := Environment{
 		"mult":   NewCallableFunction("mult", []string{"a", "b"}, mult),
 		"square": NewFunction("square", []string{"a"}, NewSExpression("mult", NewName("a"), NewName("a"))),
 	}
+	// Functions that would have been created by the interpreter must be given information about
+	// the scope that they contain
+	env["square"].Function.Scope["mult"] = env["mult"]
 	// Test that builtin functions can be invoked to get us a computed result
-	err1, value1, newEnv1 := Apply(env, env["mult"].Function, NewInteger(10), NewInteger(3))
+	value1, err1 := Apply(env["mult"].Function, NewInteger(10), NewInteger(3))
 	if err1 != nil {
 		t.Error(err1.Error())
 	}
@@ -63,11 +66,8 @@ func TestApply(t *testing.T) {
 	if value1.Integer.Contained != 30 {
 		t.Error("Expected 10 * 3 to be 30")
 	}
-	if len(newEnv1) != 2 {
-		t.Error("Expected no items to be added or removed from the environment")
-	}
 	// Test that user-defined functions can be reached and a value computed
-	err2, value2, newEnv2 := Apply(env, env["square"].Function, NewInteger(5))
+	value2, err2 := Apply(env["square"].Function, NewInteger(5))
 	if err2 != nil {
 		t.Error(err2.Error())
 	}
@@ -77,15 +77,12 @@ func TestApply(t *testing.T) {
 	if value2.Integer.Contained != 25 {
 		t.Errorf("Expected square(5) to be 25. Got %v\n", value2.Integer.Contained)
 	}
-	if len(newEnv2) != 2 {
-		t.Error("Expected no items to be added or removed from the environment")
-	}
 }
 
 func TestEvaluateSexp(t *testing.T) {
-	mult := func(env Environment, args ...interface{}) (error, Value, Environment) {
+	mult := func(args ...interface{}) (Value, error) {
 		value := args[0].(int64) * args[1].(int64)
-		return nil, NewInteger(value), env
+		return NewInteger(value), nil
 	}
 	env := Environment{
 		"a":    NewInteger(4),
@@ -115,9 +112,9 @@ func TestEvaluateSexp(t *testing.T) {
 }
 
 func TestEvaluate(t *testing.T) {
-	mult := func(env Environment, args ...interface{}) (error, Value, Environment) {
+	mult := func(args ...interface{}) (Value, error) {
 		value := args[0].(int64) * args[1].(int64)
-		return nil, NewInteger(value), env
+		return NewInteger(value), nil
 	}
 	env := Environment{
 		"a":    NewInteger(-4),

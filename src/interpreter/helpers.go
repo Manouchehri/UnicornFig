@@ -57,7 +57,7 @@ func NewCallableFunction(name string, argNames []string, fn Builtin) Value {
 	}
 	emptyl := List{[]Value{}}
 	emptym := Mapping{map[string]Value{}}
-	return Value{FunctionT, emptys, zeroi, zerof, Name{}, falseb, Function{Name{name}, names, SExpression{}, true, fn}, emptyl, emptym}
+	return Value{FunctionT, emptys, zeroi, zerof, Name{}, falseb, Function{Name{name}, names, SExpression{}, true, Environment{}, fn}, emptyl, emptym}
 }
 
 func NewFunction(name string, argNames []string, body interface{}) Value {
@@ -67,7 +67,7 @@ func NewFunction(name string, argNames []string, body interface{}) Value {
 	}
 	emptyl := List{[]Value{}}
 	emptym := Mapping{map[string]Value{}}
-	return Value{FunctionT, emptys, zeroi, zerof, Name{}, falseb, Function{Name{name}, names, body, false, nil}, emptyl, emptym}
+	return Value{FunctionT, emptys, zeroi, zerof, Name{}, falseb, Function{Name{name}, names, body, false, Environment{}, nil}, emptyl, emptym}
 }
 
 func NewList() Value {
