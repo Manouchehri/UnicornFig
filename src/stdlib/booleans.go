@@ -25,8 +25,15 @@ func SLIB_IsZero(arguments ...interface{}) (uni.Value, error) {
 	if len(arguments) != 1 {
 		return uni.Value{}, errors.New("Zero predicate function expects exactly one argument.")
 	}
-	value := arguments[0].(int64)
-	isZero := value == int64(0)
+	isZero := false
+	switch arguments[0].(type) {
+	case int64:
+		isZero = arguments[0].(int64) == int64(0)
+	case float64:
+		isZero = arguments[0].(float64) == float64(0.0)
+	default:
+		return uni.Value{}, errors.New("Zero predicate function expects a numeric argument.")
+	}
 	return ToBoolKeyword(isZero), nil
 }
 
