@@ -6,23 +6,23 @@ Here, you will get a very quick overview of the Fig language, which you will be 
 
 **Contents**
 
-* Syntax
-  * Variable names
-  * Literals
-  * Comments
-  * Calling functions
-  * Special forms
-* Standard Library
-  * Table of functions
-  * Mathematical operations
-  * String functions
-  * Boolean operations
-  * Lists and list operations
-  * Maps and map operations
-  * IO - Input and output
-* Functional Programming
-  * Recursion
-  * Closures
+* [Syntax](https://github.com/redwire/UnicornFig/blob/master/docs/guide.md#syntax)
+  * [Variable names](https://github.com/redwire/UnicornFig/blob/master/docs/guide.md#variable-names)
+  * [Literals](https://github.com/redwire/UnicornFig/blob/master/docs/guide.md#literals)
+  * [Comments](https://github.com/redwire/UnicornFig/blob/master/docs/guide.md#comments)
+  * [Calling functions](https://github.com/redwire/UnicornFig/blob/master/docs/guide.md#calling-functions)
+  * [Special forms](https://github.com/redwire/UnicornFig/blob/master/docs/guide.md#special-forms)
+* [Standard Library](https://github.com/redwire/UnicornFig/blob/master/docs/guide.md#standard-library)
+  * [Table of functions](https://github.com/redwire/UnicornFig/blob/master/docs/guide.md#standard-library)
+  * [Mathematical operations](https://github.com/redwire/UnicornFig/blob/master/docs/guide.md#math)
+  * [String functions](https://github.com/redwire/UnicornFig/blob/master/docs/guide.md#strings)
+  * [Boolean operations](https://github.com/redwire/UnicornFig/blob/master/docs/guide.md#booleans)
+  * [Lists and list operations](https://github.com/redwire/UnicornFig/blob/master/docs/guide.md#lists)
+  * [Maps and map operations](https://github.com/redwire/UnicornFig/blob/master/docs/guide.md#maps)
+  * [IO - Input and output](https://github.com/redwire/UnicornFig/blob/master/docs/guide.md#io)
+* [Functional Programming](https://github.com/redwire/UnicornFig/blob/master/docs/guide.md#functional-programming)
+  * [Recursion](https://github.com/redwire/UnicornFig/blob/master/docs/guide.md#recursion)
+  * [Closures](https://github.com/redwire/UnicornFig/blob/master/docs/guide.md#closures)
 
 ## Syntax
 
