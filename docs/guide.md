@@ -164,7 +164,7 @@ Tests if one number is less than or equal to another. Works with floats and inte
 
 #### zero?
 
-Tests if its integer argument is 0. Only accepts an integer.
+Tests if its argument is 0. Works on both integers and floats.
 
 ### Strings
 
