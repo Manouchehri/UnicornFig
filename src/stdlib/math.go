@@ -228,11 +228,21 @@ func SLIB_LessOrEqual(arguments ...interface{}) (uni.Value, error) {
 
 func SLIB_Modulo(arguments ...interface{}) (uni.Value, error) {
 	if len(arguments) < 2 {
-		return uni.Value{}, errors.New("Modulo function expects two or more arguments.")
+		return uni.Value{}, errors.New("Modulo function expects exactly two arguments.")
 	}
-	result := arguments[0].(int64)
-	for i := 1; i < len(arguments); i++ {
-		result = result % arguments[i].(int64)
+	var first, second int64
+	switch arguments[0].(type) {
+	case int64:
+		first = arguments[0].(int64)
+	default:
+		return uni.Value{}, errors.New("Modulo function expects both arguments to be integers.")
 	}
+	switch arguments[1].(type) {
+	case int64:
+		second = arguments[1].(int64)
+	default:
+		return uni.Value{}, errors.New("Modulo function expects both arguments to be integers.")
+	}
+	var result int64 = first % second
 	return uni.NewInteger(result), nil
 }
