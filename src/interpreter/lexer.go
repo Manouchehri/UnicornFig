@@ -72,7 +72,7 @@ var TransitionsFromOpen = [...]FSMTransition{
 	{"\"", DoNothing, STRING2, AddToken, START_STRING},
 	{";", DoNothing, COMMENT, AddToken, START_COMMENT},
 	{"[0-9]", DoNothing, NUMBER, AddTokenAndChar, START_NUMBER},
-	{"[0-9a-zA-Z!@#$%^&*-_+=:;<,>.?/]", DoNothing, NAME, AddTokenAndChar, START_NAME},
+	{"[0-9a-zA-Z!@#$%^&*-_+=:<,>.?/]", DoNothing, NAME, AddTokenAndChar, START_NAME},
 	{"\\)", Return, OPEN, AddToken, END_SEXP},
 }
 
