@@ -4,6 +4,12 @@ import (
 	uni "../interpreter"
 )
 
+var ConstantNames = []string{
+	"true",
+	"false",
+	"pi",
+}
+
 var StandardLibrary uni.Environment = uni.Environment{
 	"true":     uni.NewBoolean(true),
 	"false":    uni.NewBoolean(false),

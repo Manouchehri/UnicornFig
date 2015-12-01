@@ -101,9 +101,6 @@ func Unwrap(value Value) interface{} {
 		return value.Name.Contained
 	case BooleanT:
 		return value.Boolean.Contained
-	case FunctionT:
-		// TODO - This is definitely NOT going to work in most places
-		return value.Function.Callable
 	case ListT:
 		values := make([]interface{}, len(value.List.Data))
 		for i, val := range value.List.Data {
