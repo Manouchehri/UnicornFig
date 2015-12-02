@@ -47,13 +47,25 @@ func WriteYAML(env map[string]interface{}, fileName string) error {
 	return writeErr
 }
 
+// Setting becomes the name of the tag surrounding each <name> and <value> tag
+type Setting struct {
+	Name  string      `xml:"name"`
+	Value interface{} `xml:"value"`
+}
+
 func WriteXML(env map[string]interface{}, fileName string) error {
 	f, err := os.OpenFile(fileName, os.O_WRONLY|os.O_CREATE, os.ModePerm)
 	if err != nil {
 		return err
 	}
 	defer f.Close()
-	bytes, encodeErr := xml.Marshal(env)
+	data := make([]Setting, len(env))
+	index := 0
+	for k, v := range env {
+		data[index] = Setting{k, v}
+		index++
+	}
+	bytes, encodeErr := xml.Marshal(data)
 	if encodeErr != nil {
 		return encodeErr
 	}
