@@ -25,6 +25,8 @@ var StandardLibrary uni.Environment = uni.Environment{
 	"length":   uni.NewCallableFunction("length", []string{"str"}, SLIB_Length),
 	"upcase":   uni.NewCallableFunction("upcase", []string{"str"}, SLIB_Upcase),
 	"downcase": uni.NewCallableFunction("downcase", []string{"str"}, SLIB_Downcase),
+	"split":    uni.NewCallableFunction("split", []string{"_str_", "_sep_"}, SLIB_Split),
+	"at":       uni.NewCallableFunction("at", []string{"_str_", "_index_"}, SLIB_AtIndex),
 	"not":      uni.NewCallableFunction("not", []string{"value"}, SLIB_Negate),
 	"zero?":    uni.NewCallableFunction("zero?", []string{"n"}, SLIB_IsZero),
 	"and":      uni.NewCallableFunction("and", []string{"b1", "b2"}, SLIB_And),
@@ -42,5 +44,6 @@ var StandardLibrary uni.Environment = uni.Environment{
 	"mapping":  uni.NewCallableFunction("mapping", []string{"_key1_", "_value1_"}, SLIB_Map),
 	"assoc":    uni.NewCallableFunction("assoc", []string{"_map_", "_key1_", "_value1_"}, SLIB_Associate),
 	"get":      uni.NewCallableFunction("get", []string{"_map_", "_key_"}, SLIB_GetMap),
+	"keys":     uni.NewCallableFunction("keys", []string{"_map_"}, SLIB_Keys),
 	"print":    uni.NewCallableFunction("print", []string{"msg"}, SLIB_Print),
 }

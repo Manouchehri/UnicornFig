@@ -112,11 +112,11 @@ Math | Strings    | Booleans | Lists   | Maps      | IO
 `*`  | `concat`   | `=`      | `list`  | `mapping` | `print`
 `/`  | `substr`   | `not`    | `first` | `assoc`   |
 `+`  | `index`    | `and`    | `tail`  | `get`     |
-`-`  | `length`   | `or`     | `append`|
+`-`  | `length`   | `or`     | `append`| `keys`    |
 `%`  | `upcase`   |          | `size`  |
 `>`  | `downcase` |
-`<`  |
-`>=` |
+`<`  | `split`    |
+`>=` | `at`
 `<=` |
 `zero?` |
 
@@ -192,6 +192,14 @@ Converts a single string to uppercase.
 
 Converts a single string to lowercase.
 
+#### split
+
+Splits the first string argument by a second string separator.
+
+#### at
+
+Get the character of a first string argument at some integer index.
+
 ### Booleans
 
 #### =
@@ -263,6 +271,10 @@ Example
 ```js
 (get (mapping "a" 1 "b" 2) "a") => 1
 ```
+
+#### keys
+
+Get a list of the keys in a map as a list of strings.
 
 ### IO
 

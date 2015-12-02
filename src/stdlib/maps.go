@@ -90,3 +90,23 @@ func SLIB_GetMap(arguments ...interface{}) (uni.Value, error) {
 	wrapped, err := uni.Wrap(mapping[key])
 	return wrapped, err
 }
+
+func SLIB_Keys(arguments ...interface{}) (uni.Value, error) {
+	if len(arguments) != 1 {
+		return uni.Value{}, errors.New("Keys function expects a single map argument.")
+	}
+	switch arguments[0].(type) {
+	case map[string]interface{}:
+		break
+	default:
+		return uni.Value{}, errors.New("Keys function expects its argument to be a map.")
+	}
+	mapping := arguments[0].(map[string]interface{})
+	list := uni.NewList()
+	for k, _ := range mapping {
+		wrapped, _ := uni.Wrap(k)
+		list.List.Data = append(list.List.Data, wrapped)
+	}
+	return list, nil
+
+}

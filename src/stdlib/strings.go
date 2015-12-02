@@ -3,6 +3,7 @@ package stdlib
 import (
 	uni "../interpreter"
 	"errors"
+	"fmt"
 	"strings"
 )
 
@@ -59,4 +60,50 @@ func SLIB_Downcase(arguments ...interface{}) (uni.Value, error) {
 	str := arguments[0].(string)
 	str = strings.ToLower(str)
 	return uni.NewString(str), nil
+}
+
+func SLIB_Split(arguments ...interface{}) (uni.Value, error) {
+	if len(arguments) != 2 {
+		return uni.Value{}, errors.New("Split function expects two string arguments.")
+	}
+	for i := 0; i < 2; i++ {
+		switch arguments[i].(type) {
+		case string:
+			break
+		default:
+			return uni.Value{}, errors.New("Split function expects oth arguments to be strings.")
+		}
+	}
+	splitStrings := strings.Split(arguments[0].(string), arguments[1].(string))
+	list := uni.NewList()
+	for _, str := range splitStrings {
+		wrapped, _ := uni.Wrap(str)
+		list.List.Data = append(list.List.Data, wrapped)
+	}
+	return list, nil
+}
+
+func SLIB_AtIndex(arguments ...interface{}) (uni.Value, error) {
+	if len(arguments) != 2 {
+		return uni.Value{}, errors.New("At function expects two arguments.")
+	}
+	switch arguments[0].(type) {
+	case string:
+		break
+	default:
+		return uni.Value{}, errors.New("At function expects first argument to be a string.")
+	}
+	switch arguments[1].(type) {
+	case int64:
+		break
+	default:
+		return uni.Value{}, errors.New("At function expects second argument to be an integer.")
+	}
+	str := arguments[0].(string)
+	index := arguments[1].(int64)
+	if index < int64(0) || index >= int64(len(str)) {
+		errMsg := fmt.Sprintf("String index out of range. Cannot get index %d of \"%s\"", index, str)
+		return uni.Value{}, errors.New(errMsg)
+	}
+	return uni.NewString(string(str[index])), nil
 }
