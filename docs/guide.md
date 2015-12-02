@@ -122,127 +122,127 @@ Math | Strings    | Booleans | Lists   | Maps      | IO
 
 ### Math
 
-#### *
+#### * (a, b, ... integer)
 
 Multiplies two or more numbers together.  If any of the arguments are floats, the result will be a float.
 
-#### /
+#### / (a, b, ... integer)
 
 Divides two or more numbers.  If any of the arguments are floats, the result will be a float.
 
 Note that calling `(/ 12 4 2)` is calculated like `(12 / 4) / 2`.
 
-#### +
+#### + (a, b, ... integer)
 
 Adds two or more numbers together. If any of the arguments are floats, the result will be a float.
 
-#### -
+#### - (a, b, ... integer)
 
 Subtracts two or more numbers. If any of the arguments are floats, the result will be a float.
 
 Note that calling `(- 3 2 1)` is calculated like `(3 - 2) - 1`.
 
-#### %
+#### % (a, b integer)
 
 Calculates the modulo of exactly two integers. Floats are not accepted.
 
-#### >
+#### > (a, b number)
 
 Tests if one number is greater than another. Works with floats and integers.
 
-#### <
+#### < (a, b number)
 
 Tests if one number is less than another. Works with floats and integers.
 
-#### >=
+#### >= (a, b number)
 
 Tests if one number is greater than or equal to another. Works with floats and integers.
 
-#### <=
+#### <= (a, b number)
 
 Tests if one number is less than or equal to another. Works with floats and integers.
 
-#### zero?
+#### zero? (n number)
 
 Tests if its argument is 0. Works on both integers and floats.
 
 ### Strings
 
-#### concat
+#### concat (s1, s2, ... string)
 
 Concatenates two or more strings together.
 
-#### substr
+#### substr (s string, start, end integer)
 
 Produces a substring. The first argument is a string. The second is an integer representing the index to start at (0-based and inclusive). The third argument is an integer representing the index to stop at (non-inclusive).
 
-#### index
+#### index (haystack, needle string)
 
 Determines the first index at which a substring can be found within another string. The first argument is the string to search in. The second argument is the substring to search for. If the substring is not found, returns `-1`.
 
-#### length
+#### length (s string)
 
 Calculates the length of a single string as an integer.
 
-#### upcase
+#### upcase (s string)
 
 Converts a single string to uppercase.
 
-#### downcase
+#### downcase (s string)
 
 Converts a single string to lowercase.
 
-#### split
+#### split (s, separator string)
 
 Splits the first string argument by a second string separator.
 
-#### at
+#### at (s string, index integer)
 
 Get the character of a first string argument at some integer index.
 
 ### Booleans
 
-#### =
+#### = (a, b, ... number/boolean/string)
 
 Test if two or more values are equal. Works with bools, numbers, and strings. All arguments must be the same type.
 
-#### not
+#### not (b boolean)
 
 Negates a single boolean value.
 
-#### and
+#### and (a, b, ... boolean)
 
 Determines whether all of the arguments are true. Only works with booleans.
 
-#### or
+#### or (a, b, ... boolean)
 
 Determines whether any of the arguments are true. Only works with booleans,
 
 ### Lists
 
-#### list
+#### list (v1, v2, ... any)
 
 Create a list composed of all of the values provided as arguments in order.
 
-#### first
+#### first (l list)
 
 Retrieves the first element of a single list argument.
 
-#### tail
+#### tail (l list)
 
 Retrieves a sub-list containing all but the first element of a single list argument.
 
-#### append
+#### append (l list, v1, v2, ... any)
 
 Creates a new list with all the argument values following the first list argument appended to that list.
 
-#### size
+#### size (l list)
 
 Computes the number of elements in a single list argument as an integer.
 
 ### Maps
 
-#### mapping
+#### mapping (k1 string, v1 any, k2 string, v2 any, ...)
 
 Creates a map/dictionary associating values to string keys. Each even-indexed argument (starting from 0) must be a string that wil be a key mapping to the following value.
 
@@ -252,7 +252,7 @@ Example
 (mapping "hello" 3.14 "world" 2) => {"hello": 3.14, "world": 2}
 ```
 
-#### assoc
+#### assoc (m map, k1 string, v1 any, k2 string, v2 any, ...)
 
 Adds new key-value pairs to a map. The first argument must be a map and then all successive arguments must be string keys followed by the corresponding value.
 
@@ -262,7 +262,7 @@ Example
 (assoc (mapping "hello" 3.14) "world" 2 "!" "woah") => {"hello": 3.14, "world": 2, "!": "woah"}
 ```
 
-#### get
+#### get (m map, key string)
 
 Retrieves the value associated with a given key from a map. The first argument is a map. The second argument is a string key.
 
@@ -272,13 +272,13 @@ Example
 (get (mapping "a" 1 "b" 2) "a") => 1
 ```
 
-#### keys
+#### keys (m map)
 
 Get a list of the keys in a map as a list of strings.
 
 ### IO
 
-#### print
+#### print (v1, v2, ... any)
 
 Prints any number of values to the console.
 
