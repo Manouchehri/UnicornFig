@@ -110,7 +110,7 @@ The first S-Expression provided is treated as a list of argument names, and the 
 Math | Strings    | Booleans | Lists   | Maps      | IO
 -----|------------|----------|---------|-----------|------
 `*`  | `concat`   | `=`      | `list`  | `mapping` | `print`
-`/`  | `substr`   | `not`    | `first` | `assoc`   |
+`/`  | `substr`   | `not`    | `first` | `assoc`   | `env`
 `+`  | `index`    | `and`    | `tail`  | `get`     |
 `-`  | `length`   | `or`     | `append`| `keys`    |
 `%`  | `upcase`   |          | `size`  |
@@ -281,6 +281,24 @@ Get a list of the keys in a map as a list of strings.
 #### print (v1, v2, ... any)
 
 Prints any number of values to the console.
+
+#### env (name string)
+
+Returns the value of the environment variable corresponding to the provided name as a string.
+For example, the following program
+
+```js
+; test.fig
+(print (env "WHATWASSET"))
+```
+
+when run like
+
+```bash
+WHATWASSET=thishaha ./unicorn test.fig
+```
+
+outputs `thishaha`.
 
 ## Functional Programming
 

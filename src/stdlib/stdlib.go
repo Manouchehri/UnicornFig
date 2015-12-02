@@ -46,4 +46,5 @@ var StandardLibrary uni.Environment = uni.Environment{
 	"get":      uni.NewCallableFunction("get", []string{"_map_", "_key_"}, SLIB_GetMap),
 	"keys":     uni.NewCallableFunction("keys", []string{"_map_"}, SLIB_Keys),
 	"print":    uni.NewCallableFunction("print", []string{"msg"}, SLIB_Print),
+	"env":      uni.NewCallableFunction("env", []string{"_envvar_"}, SLIB_Environment),
 }
