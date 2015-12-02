@@ -4,7 +4,6 @@ import (
 	uni "./interpreter"
 	stdlib "./stdlib"
 	"encoding/json"
-	"encoding/xml"
 	"errors"
 	"fmt"
 	"gopkg.in/yaml.v2"
@@ -16,7 +15,6 @@ import (
 var SupportedFormatHandlers = map[string]func(map[string]interface{}, string) error{
 	"json": WriteJSON,
 	"yaml": WriteYAML,
-	"xml":  WriteXML,
 }
 
 func WriteJSON(env map[string]interface{}, fileName string) error {
@@ -40,32 +38,6 @@ func WriteYAML(env map[string]interface{}, fileName string) error {
 	}
 	defer f.Close()
 	bytes, encodeErr := yaml.Marshal(env)
-	if encodeErr != nil {
-		return encodeErr
-	}
-	_, writeErr := f.Write(bytes)
-	return writeErr
-}
-
-// Setting becomes the name of the tag surrounding each <name> and <value> tag
-type Setting struct {
-	Name  string      `xml:"name"`
-	Value interface{} `xml:"value"`
-}
-
-func WriteXML(env map[string]interface{}, fileName string) error {
-	f, err := os.OpenFile(fileName, os.O_WRONLY|os.O_CREATE, os.ModePerm)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-	data := make([]Setting, len(env))
-	index := 0
-	for k, v := range env {
-		data[index] = Setting{k, v}
-		index++
-	}
-	bytes, encodeErr := xml.MarshalIndent(data, "", "    ")
 	if encodeErr != nil {
 		return encodeErr
 	}
@@ -141,7 +113,7 @@ func main() {
 		outputFormats[format] = ""
 	}
 	programFile := os.Args[len(os.Args)-1]
-	// Parse arguments in any form such as "--json output.json -YAML data.yaml xml encoded.xml myprogram.fig"
+	// Parse arguments in any form such as "--json output.json -YAML data.yaml myprogram.fig"
 	for i := 1; i < len(os.Args)-1; i++ {
 		format := strings.ToLower(strings.Replace(os.Args[i], "-", "", -1))
 		_, isSupported := outputFormats[format]
