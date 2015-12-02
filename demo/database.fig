@@ -1,0 +1,25 @@
+(define
+    (account (function (username password)
+        (mapping "username" username "password" password)))
+    (database (function (type url accounts)
+        (mapping
+            "type" type
+            "address" url
+            "accounts" accounts))))
+
+
+;-------------------------------;
+; ADD DATABASE INFORMATION HERE ;
+;-------------------------------;
+
+(define
+    (databases (list
+        (database "mysql" "http://localhost:9080/" (mapping
+            "admin" (account "admin01" "hunter2")
+            "testing" (account "testAccount" "doNotPush-toProduction")
+            "staging" (account "__staging__" "_&71faGWvA099!")))
+        (database "postgres" "https://offshore.server:9001" (mapping
+            "admin" (account "superuser" "*#@SDFGfgajw!@#_gga"))))))
+
+(print "Generating the following configuration data.")
+(print databases)

@@ -1,0 +1,32 @@
+{
+    "databases": [
+        {
+            "accounts": {
+                "admin": {
+                    "password": "hunter2",
+                    "username": "admin01"
+                },
+                "staging": {
+                    "password": "_\u002671faGWvA099!",
+                    "username": "__staging__"
+                },
+                "testing": {
+                    "password": "doNotPush-toProduction",
+                    "username": "testAccount"
+                }
+            },
+            "address": "http://localhost:9080/",
+            "type": "mysql"
+        },
+        {
+            "accounts": {
+                "admin": {
+                    "password": "*#@SDFGfgajw!@#_gga",
+                    "username": "superuser"
+                }
+            },
+            "address": "https://offshore.server:9001",
+            "type": "postgres"
+        }
+    ]
+}
