@@ -25,7 +25,7 @@ func WriteJSON(env map[string]interface{}, fileName string) error {
 		return err
 	}
 	defer f.Close()
-	bytes, encodeErr := json.Marshal(env)
+	bytes, encodeErr := json.MarshalIndent(env, "", "    ")
 	if encodeErr != nil {
 		return encodeErr
 	}
@@ -65,7 +65,7 @@ func WriteXML(env map[string]interface{}, fileName string) error {
 		data[index] = Setting{k, v}
 		index++
 	}
-	bytes, encodeErr := xml.Marshal(data)
+	bytes, encodeErr := xml.MarshalIndent(data, "", "    ")
 	if encodeErr != nil {
 		return encodeErr
 	}
