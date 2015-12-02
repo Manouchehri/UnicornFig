@@ -82,7 +82,7 @@ func WriteOutputFiles(formats map[string]string, data uni.Environment) error {
 	}
 	for format, writer := range SupportedFormatHandlers {
 		if fileName, shouldWrite := formats[format]; shouldWrite {
-			if err := writer(toWrite, fileName); err != nil {
+			if err := writer(toWrite, fileName); len(fileName) > 0 && err != nil {
 				return err
 			}
 		}
@@ -131,7 +131,7 @@ func main() {
 	programFile := os.Args[len(os.Args)-1]
 	// Parse arguments in any form such as "--json output.json -YAML data.yaml xml encoded.xml myprogram.fig"
 	for i := 1; i < len(os.Args)-1; i++ {
-		format := strings.ToLower(strings.Replace(os.Args[0], "-", "", -1))
+		format := strings.ToLower(strings.Replace(os.Args[i], "-", "", -1))
 		_, isSupported := outputFormats[format]
 		if isSupported {
 			outputFormats[format] = os.Args[i+1]
@@ -141,6 +141,7 @@ func main() {
 	// Open and interpret the program file
 	file, err := os.Open(programFile)
 	if err != nil {
+		fmt.Println("Couldn't open program file " + programFile)
 		fmt.Println(err)
 		return
 	}
