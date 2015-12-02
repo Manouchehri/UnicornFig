@@ -12,6 +12,12 @@ import (
 	"strings"
 )
 
+const HelpMessage = `Run this program as ./unicorn [format file [format file [...]]] program.fig
+Currently the supported format flags are
+	-json - Output program state to a JSON file
+	-yaml - Output program state to a YAML file
+`
+
 var SupportedFormatHandlers = map[string]func(map[string]interface{}, string) error{
 	"json": WriteJSON,
 	"yaml": WriteYAML,
@@ -103,8 +109,7 @@ func Interpret(program string) (uni.Environment, error) {
 
 func main() {
 	if len(os.Args) < 2 {
-		// TODO - Write a more complete help string
-		fmt.Printf("Run this program with %s <program.fig>\n", os.Args[0])
+		fmt.Println(HelpMessage)
 		return
 	}
 	// Maps are supported output file formats and values are names of files to write to if any.

@@ -35,7 +35,7 @@ You can run a Fig program by running the command
 ```
 
 Of course, both the `-json` and `-yaml` arguments are optional.  If neither are provided, Unicorn will execute the
-program from provided and not write to any files.
+program file provided and not write to any files.
 
 You can see a practical example of how you might use Unicorn and Fig in the
 [demo](https://github.com/redwire/UnicornFig/tree/master/demo) contained in the repository!
