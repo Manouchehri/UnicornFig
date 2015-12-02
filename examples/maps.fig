@@ -18,3 +18,7 @@
 ; You can extract the value contained in a map associated with a key using get.
 
 (print (get (mapping "a" 1 "b" 0) "a")) ; Prints 1
+
+; To get a list of the keys in a map as a list of strings, use the keys function.
+
+(print (keys (mapping "a" 1 "b" 2 "c" 4))) ; Prints [a b c]

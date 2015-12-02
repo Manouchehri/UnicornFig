@@ -27,3 +27,12 @@
 
 (print (upcase "Hello world")) ; Prints "HELLO WORLD" without quotes.
 (print (downcase "WOW!"))      ; Prints "wow!" without quotes.
+
+; You can also split a string using the split function.
+; Doing so gives you a list of strings.
+
+(print (split "hello world" " ")) ; Prints [hello world]
+
+; A single character at a particular index can be retrieved using the at function.
+
+(print (at "hello" 4)) ; Prints "o" without quotes
