@@ -18,31 +18,31 @@ var (
 func NewString(str string) Value {
 	emptyl := List{[]Value{}}
 	emptym := Mapping{map[string]Value{}}
-	return Value{StringT, StringLiteral{str}, zeroi, zerof, Name{}, falseb, Function{}, emptyl, emptym}
+	return Value{StringT, StringLiteral{str}, zeroi, zerof, Name{}, falseb, Function{}, emptyl, emptym, false}
 }
 
 func NewInteger(n int64) Value {
 	emptyl := List{[]Value{}}
 	emptym := Mapping{map[string]Value{}}
-	return Value{IntegerT, emptys, IntegerLiteral{n}, zerof, Name{}, falseb, Function{}, emptyl, emptym}
+	return Value{IntegerT, emptys, IntegerLiteral{n}, zerof, Name{}, falseb, Function{}, emptyl, emptym, false}
 }
 
 func NewFloat(n float64) Value {
 	emptyl := List{[]Value{}}
 	emptym := Mapping{map[string]Value{}}
-	return Value{FloatT, emptys, zeroi, FloatLiteral{n}, Name{}, falseb, Function{}, emptyl, emptym}
+	return Value{FloatT, emptys, zeroi, FloatLiteral{n}, Name{}, falseb, Function{}, emptyl, emptym, false}
 }
 
 func NewName(identifier string) Value {
 	emptyl := List{[]Value{}}
 	emptym := Mapping{map[string]Value{}}
-	return Value{NameT, emptys, zeroi, zerof, Name{identifier}, falseb, Function{}, emptyl, emptym}
+	return Value{NameT, emptys, zeroi, zerof, Name{identifier}, falseb, Function{}, emptyl, emptym, false}
 }
 
 func NewBoolean(value bool) Value {
 	emptyl := List{[]Value{}}
 	emptym := Mapping{map[string]Value{}}
-	return Value{BooleanT, emptys, zeroi, zerof, Name{}, BooleanLiteral{value}, Function{}, emptyl, emptym}
+	return Value{BooleanT, emptys, zeroi, zerof, Name{}, BooleanLiteral{value}, Function{}, emptyl, emptym, false}
 }
 
 func NewSExpression(formName string, values ...interface{}) SExpression {
@@ -61,7 +61,7 @@ func NewCallableFunction(name string, argNames []string, fn Builtin) Value {
 	}
 	emptyl := List{[]Value{}}
 	emptym := Mapping{map[string]Value{}}
-	return Value{FunctionT, emptys, zeroi, zerof, Name{}, falseb, Function{Name{name}, names, SExpression{}, true, Environment{}, fn}, emptyl, emptym}
+	return Value{FunctionT, emptys, zeroi, zerof, Name{}, falseb, Function{Name{name}, names, SExpression{}, true, Environment{}, fn}, emptyl, emptym, false}
 }
 
 func NewFunction(name string, argNames []string, body interface{}) Value {
@@ -71,19 +71,19 @@ func NewFunction(name string, argNames []string, body interface{}) Value {
 	}
 	emptyl := List{[]Value{}}
 	emptym := Mapping{map[string]Value{}}
-	return Value{FunctionT, emptys, zeroi, zerof, Name{}, falseb, Function{Name{name}, names, body, false, Environment{}, nil}, emptyl, emptym}
+	return Value{FunctionT, emptys, zeroi, zerof, Name{}, falseb, Function{Name{name}, names, body, false, Environment{}, nil}, emptyl, emptym, false}
 }
 
 func NewList() Value {
 	emptyl := List{[]Value{}}
 	emptym := Mapping{map[string]Value{}}
-	return Value{ListT, emptys, zeroi, zerof, Name{}, falseb, Function{}, emptyl, emptym}
+	return Value{ListT, emptys, zeroi, zerof, Name{}, falseb, Function{}, emptyl, emptym, false}
 }
 
 func NewMap() Value {
 	emptyl := List{[]Value{}}
 	emptym := Mapping{map[string]Value{}}
-	return Value{MapT, emptys, zeroi, zerof, Name{}, falseb, Function{}, emptyl, emptym}
+	return Value{MapT, emptys, zeroi, zerof, Name{}, falseb, Function{}, emptyl, emptym, false}
 }
 
 /**

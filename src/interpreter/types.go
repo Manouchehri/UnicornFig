@@ -116,6 +116,7 @@ type Value struct {
 	Function Function
 	List     List
 	Map      Mapping
+	Ignored  bool // Should we ignore the value when producing an output config file?
 }
 
 // Lists

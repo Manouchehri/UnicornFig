@@ -55,6 +55,9 @@ func WriteOutputFiles(formats map[string]string, data uni.Environment) error {
 	// Strip out values that we can't encode, like functions, as well as constants defined in Unicorn.
 	toWrite := make(map[string]interface{})
 	for k, v := range data {
+		if v.Ignored {
+			continue
+		}
 		shouldContinue := false
 		for _, constantName := range stdlib.ConstantNames {
 			if k == constantName {

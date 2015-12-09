@@ -28,3 +28,12 @@ func SLIB_Environment(arguments ...interface{}) (uni.Value, error) {
 	envVar := os.Getenv(arguments[0].(string))
 	return uni.NewString(envVar), nil
 }
+
+func SLIB_Ignore(arguments ...interface{}) (uni.Value, error) {
+	if len(arguments) != 1 {
+		return uni.Value{}, errors.New("Ignore function expects only one argument.")
+	}
+	wrapped, err := uni.Wrap(arguments[0])
+	wrapped.Ignored = true
+	return wrapped, err
+}

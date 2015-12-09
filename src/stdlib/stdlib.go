@@ -47,4 +47,5 @@ var StandardLibrary uni.Environment = uni.Environment{
 	"keys":     uni.NewCallableFunction("keys", []string{"_map_"}, SLIB_Keys),
 	"print":    uni.NewCallableFunction("print", []string{"msg"}, SLIB_Print),
 	"env":      uni.NewCallableFunction("env", []string{"_envvar_"}, SLIB_Environment),
+	"ignored":  uni.NewCallableFunction("ignored", []string{"_value_"}, SLIB_Ignore),
 }
