@@ -1,0 +1,24 @@
+; Routes provided by the API we want to call into
+
+(define
+    (base-url (ignored "http://localhost:3090"))
+    (status   (ignored (concat base-url "/status")))
+    (lookup   (ignored (concat base-url "/lookup")))
+    (error    (ignored (concat base-url "/error/decode"))))
+
+; Functions for building an HTTP description string
+
+(define
+    (http (function (method url params-map body-map)
+        (mapping "method" method
+                 "route"  url
+                 "params" params-map
+                 "data"   body-map))))
+
+(define
+    (port "9099")         ; The port our service should bind to
+    (address "localhost") ; The address our service should bind to
+    (routes (mapping      ; Information describing how to invoke the API we want to use
+        "status" (http "GET"  status (mapping) (mapping))
+        "lookup" (http "GET"  lookup (mapping "url" "string") (mapping))
+        "error"  (http "POST" error  (mapping) (mapping "errCode" "int" "errMsg" "string")))))

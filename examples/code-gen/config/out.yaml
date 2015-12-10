@@ -1,0 +1,21 @@
+address: localhost
+port: "9099"
+routes:
+  error:
+    data:
+      errCode: int
+      errMsg: string
+    method: POST
+    params: {}
+    route: http://localhost:3090/error/decode
+  lookup:
+    data: {}
+    method: GET
+    params:
+      url: string
+    route: http://localhost:3090/lookup
+  status:
+    data: {}
+    method: GET
+    params: {}
+    route: http://localhost:3090/status
