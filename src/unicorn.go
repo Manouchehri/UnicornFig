@@ -1,6 +1,7 @@
 package main
 
 import (
+	codegen "./codegen"
 	uni "./interpreter"
 	stdlib "./stdlib"
 	"encoding/json"
@@ -16,11 +17,13 @@ const HelpMessage = `Run this program as ./unicorn [format file [format file [..
 Currently the supported format flags are
 	-json - Output program state to a JSON file
 	-yaml - Output program state to a YAML file
+	-go   - Output a Go source code file containing a Configuration struct and parser functions
 `
 
 var SupportedFormatHandlers = map[string]func(map[string]interface{}, string) error{
 	"json": WriteJSON,
 	"yaml": WriteYAML,
+	"go":   codegen.GenerateConfigCodeFile,
 }
 
 func WriteJSON(env map[string]interface{}, fileName string) error {

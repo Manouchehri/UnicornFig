@@ -13,6 +13,9 @@ go test
 cd ../stdlib
 echo "  * Standard Library"
 go test
+cd ../codegen
+echo "  * Code Geenerators"
+go test
 cd ..
 echo "  * Unicorn"
 go test
