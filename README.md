@@ -8,12 +8,9 @@ Quite right, my good man!
 
 Hah! I doubt that! But let's pretend I do for a moment, shall we?
 
-UnicornFig is a side project of mine with the rather ambitious goal of becoming a really simple "Emacs Lisp for everyone."  What that essentially means is it hopes to not just be *yet another Lisp implementation*, but rather a Lisp interpreter that outputs configuration files in familiar formats like [JSON](https://en.wikipedia.org/wiki/JSON) and [YAML](https://en.wikipedia.org/wiki/YAML) as well as [Golang](https://golang.org/) code containing structs and validators for data.
+UnicornFig is a side project of mine with the rather ambitious goal of becoming a really simple "Emacs Lisp for everyone."  What that essentially means is it hopes to not just be *yet another Lisp implementation*, but rather a Lisp interpreter that outputs configuration files in familiar formats like [JSON](https://en.wikipedia.org/wiki/JSON) and [YAML](https://en.wikipedia.org/wiki/YAML) as well as [Golang](https://golang.org/) code containing structs for data.
 
 The project consists, really, of two parts. **Unicorn** is the name given to the interpreter & code generation tool, and **Fig** is the name given to the Lisp dialect.
-
-Currently, Unicorn is capable of producing JSON files and YAML files containing data defined at the global scope of a
-fig program.
 
 ## How do I get started?
 
@@ -38,7 +35,9 @@ Of course, both the `-json` and `-yaml` arguments are optional.  If neither are 
 program file provided and not write to any files.
 
 You can see a practical example of how you might use Unicorn and Fig in the
-[demo](https://github.com/redwire/UnicornFig/tree/master/demo) contained in the repository!
+[demo](https://github.com/redwire/UnicornFig/tree/master/demo) contained in the repository.
+Further, you can see a full example of Uniorn's code generation in use in the
+[demo/code-gen](https://github.com/zsck/UnicornFig/tree/master/demo/code-gen) directory.
 
 ## Feedback? Questions? Suggestions?
 
