@@ -19,7 +19,9 @@ import (
 
 // A structure that contains parsed configuration data
 type Configuration struct {
-	{{.Fields}}
+{{range .Fields}}
+	{{.}}
+{{end}}
 }
 
 func LoadConfigJson(fileName string) (Configuration, error) {
@@ -74,7 +76,7 @@ func fieldName(varName string) string {
  * Create the fields strings to be inserted into the code template.
  * These fields define the struct into which config file data can be parsed/unmarshalled.
  */
-func createFields(env map[string]interface{}) string {
+func createFields(env map[string]interface{}) []string {
 	fields := make([]string, len(env))
 	index := 0
 	for k, v := range env {
@@ -97,10 +99,10 @@ func createFields(env map[string]interface{}) string {
 			typeName = "map[string]interface{}"
 		}
 		field = strings.Replace(field, "{{.Type}}", typeName, 1)
-		fields[index] = "\t" + field
+		fields[index] = field
 		index++
 	}
-	return strings.Join(fields, "\n")
+	return fields
 }
 
 func GenerateConfigCodeFile(env map[string]interface{}, fileName string) error {
@@ -114,5 +116,5 @@ func GenerateConfigCodeFile(env map[string]interface{}, fileName string) error {
 		return templateErr
 	}
 	fields := createFields(env)
-	return t.Execute(file, map[string]string{"Fields": fields})
+	return t.Execute(file, map[string][]string{"Fields": fields})
 }
