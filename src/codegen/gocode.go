@@ -98,6 +98,7 @@ func createFields(env map[string]interface{}) string {
 		}
 		field = strings.Replace(field, "{{.Type}}", typeName, 1)
 		fields[index] = "\t" + field
+		index++
 	}
 	return strings.Join(fields, "\n")
 }
