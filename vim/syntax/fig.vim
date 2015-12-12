@@ -6,11 +6,6 @@ syntax keyword figKeywords
     \ false
 
 syntax keyword figBuiltins
-    \ *
-    \ /
-    \ +
-    \ -
-    \ %
     \ concat
     \ substr
     \ index
@@ -23,11 +18,6 @@ syntax keyword figBuiltins
     \ zero?
     \ and
     \ or
-    \ =
-    \ >
-    \ <
-    \ >=
-    \ <=
     \ list
     \ first
     \ tail
@@ -44,6 +34,18 @@ syntax keyword figBuiltins
 syntax match figNumber "\v<\d+>"
 syntax match figNumber "\v<\d+\.\d+>"
 
+syntax match figOperator "\v\*"
+syntax match figOperator "\v/"
+syntax match figOperator "\v\+"
+syntax match figOperator "\v-"
+syntax match figOperator "\v\="
+syntax match figOperator "\v\<"
+syntax match figOperator "\v\>"
+syntax match figOperator "\v\>"
+syntax match figOperator "\v\%"
+syntax match figOperator "\v\>\="
+syntax match figOperator "\v\<\="
+
 syntax region figString start=/"/ end=/"/ oneline
 syntax region figString start=/'/ end=/'/ oneline
 
@@ -54,3 +56,4 @@ highlight default link figNumber Number
 highlight default link figString String
 highlight default link figKeywords Keyword
 highlight figBuiltins ctermfg=Blue
+highlight figOperator ctermfg=LightBlue
