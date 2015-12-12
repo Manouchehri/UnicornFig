@@ -104,7 +104,7 @@ var TransitionsFromNumber = [...]FSMTransition{
 var TransitionsFromName = [...]FSMTransition{
 	{"\\s", DoNothing, OPEN, AddToken, END_NAME},
 	{"\\)", DoNothing, OPEN, AddTokenAndEndSexp, END_NAME},
-	{"[0-9a-zA-Z!@#$%^&*-_+=:;<,>.?/]", DoNothing, NAME, AddChar, NO_TOKEN},
+	{"[0-9a-zA-Z!@#$%^&*-_+=:<,>.?/]", DoNothing, NAME, AddChar, NO_TOKEN},
 }
 
 /**
