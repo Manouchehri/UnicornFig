@@ -39,6 +39,12 @@ You can see a practical example of how you might use Unicorn and Fig in the
 Further, you can see a full example of Uniorn's code generation in use in the
 [demo/code-gen](https://github.com/zsck/UnicornFig/tree/master/demo/code-gen) directory.
 
+## Vim syntax highlighting
+
+For vim users, I've created an ftplugin, ftdetect, and syntax file for vim that provide reasonable syntax highlighting
+for Fig code.  Everything is located in the `vim/` directory.  There is also a `vim/install.sh` script that you can run
+to automatically copy the necessary files to the right place.
+
 ## Feedback? Questions? Suggestions?
 
 I'd love to hear about them!
