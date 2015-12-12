@@ -111,7 +111,7 @@ Math | Strings    | Booleans | Lists   | Maps      | IO
 -----|------------|----------|---------|-----------|------
 `*`  | `concat`   | `=`      | `list`  | `mapping` | `print`
 `/`  | `substr`   | `not`    | `first` | `assoc`   | `env`
-`+`  | `index`    | `and`    | `tail`  | `get`     |
+`+`  | `index`    | `and`    | `tail`  | `get`     | `ignored`
 `-`  | `length`   | `or`     | `append`| `keys`    |
 `%`  | `upcase`   |          | `size`  |
 `>`  | `downcase` |
@@ -299,6 +299,30 @@ WHATWASSET=thishaha ./unicorn test.fig
 ```
 
 outputs `thishaha`.
+
+#### ignored (value any)
+
+By calling `ignored` on a value, Unicorn will set a flag on the variable internally to prevent that value from appearing
+in output files.  Note that if new values are created by passing ignored values into functions to produce a new value,
+the resulting value **will not** be ignored. That is, you must explicitly ignore each value created.
+
+For example, the following program
+
+```js
+(define
+    (baseUrl (ignored "localhost:3000"))
+    (index (concat "http://" baseUrl "/index.html")))
+```
+
+would produce a JSON file containing only
+
+```js
+{
+    "index": "http://localhost:3000/index.html"
+}
+```
+
+when run.
 
 ## Functional Programming
 
