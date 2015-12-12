@@ -1,14 +1,12 @@
 # Unicorn... Fig? What the heck?
 
-Quite right, my good man!
-
-**Unicorn Fig** is a really terrible pun on the words "universal" and "configuration"!
+**Unicorn Fig** is a really terrible play on the words "universal" and "configuration".
 
 ## Now you have my attention
 
-Hah! I doubt that! But let's pretend I do for a moment, shall we?
+I doubt that! But let's pretend I do for a moment, shall we?
 
-UnicornFig is a side project of mine with the rather ambitious goal of becoming a really simple "Emacs Lisp for everyone."  What that essentially means is it hopes to not just be *yet another Lisp implementation*, but rather a Lisp interpreter that outputs configuration files in familiar formats like [JSON](https://en.wikipedia.org/wiki/JSON) and [YAML](https://en.wikipedia.org/wiki/YAML) as well as [Golang](https://golang.org/) code containing structs for data.
+UnicornFig has the ambitious goal of becoming a really simple "Emacs Lisp for everyone."  What that essentially means is that it hopes to not just be *yet another Lisp implementation*, but rather a Lisp interpreter that outputs configuration files in familiar formats like [JSON](https://en.wikipedia.org/wiki/JSON) and [YAML](https://en.wikipedia.org/wiki/YAML) as well as [Golang](https://golang.org/) code containing structs for data.
 
 The project consists, really, of two parts. **Unicorn** is the name given to the interpreter & code generation tool, and **Fig** is the name given to the Lisp dialect.
 
@@ -28,10 +26,10 @@ Now you can begin learning the language by checking out the introductory guide i
 You can run a Fig program by running the command
 
 ```bash
-./unicorn -json output.json -yaml config.yaml <file>.fig
+./unicorn -json output.json -yaml config.yaml -go config.go <file>.fig
 ```
 
-Of course, both the `-json` and `-yaml` arguments are optional.  If neither are provided, Unicorn will execute the
+Of course, both the `-json`, `-yaml`, and `-go` arguments are optional.  If none are provided, Unicorn will execute the
 program file provided and not write to any files.
 
 You can see a practical example of how you might use Unicorn and Fig in the
