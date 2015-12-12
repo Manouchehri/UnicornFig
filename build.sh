@@ -22,6 +22,11 @@ go test
 cd ..
 
 echo ""
+echo "Installing dependencies"
+echo "  * Yaml.v2"
+go get -u gopkg.in/yaml.v2
+
+echo ""
 echo "Building Unicorn"
 go build src/unicorn.go
 if [ $? -eq 0 ]; then
