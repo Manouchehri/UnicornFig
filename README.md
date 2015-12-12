@@ -37,6 +37,9 @@ You can see a practical example of how you might use Unicorn and Fig in the
 Further, you can see a full example of Uniorn's code generation in use in the
 [demo/code-gen](https://github.com/zsck/UnicornFig/tree/master/demo/code-gen) directory.
 
+It is advised that users read the `demo/code-gen/README.md` file to understand how the feature works and what its
+shortcomings are.
+
 ## Vim syntax highlighting
 
 For vim users, I've created an ftplugin, ftdetect, and syntax file for vim that provide reasonable syntax highlighting
