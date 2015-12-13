@@ -24,7 +24,7 @@ as well as [Golang](https://golang.org/) code containing structs for data.
 ## How do I get started?
 
 The first thing to do is of course to clone the repository and build the interpreter.
-Of course, to do this, you will need to have [git](https://www.git-scm.com/) and [Go](https://golang.org/dl/)
+Of course, to do this, you will need to have [Git](https://www.git-scm.com/) and [Go](https://golang.org/dl/)
 installed on your computer.
 
 ```bash
@@ -34,51 +34,51 @@ sh build.sh
 ```
 
 Now you can begin learning the language by checking out the introductory guide in
-[docs/guide.md](https://github.com/redwire/UnicornFig/blob/master/docs/guide.md)
+[`docs/guide.md`](https://github.com/redwire/UnicornFig/blob/master/docs/guide.md)
 and/or by reading the example programs showing off the language's features in
-`examples/`.  All of the code there can be executed by unicorn.
+[`examples/`](https://github.com/zsck/UnicornFig/tree/master/examples).  All of the code there can be executed by Unicorn.
 
-You can run a Fig program by running the command
+You can run a Fig program by running the following command:
 
 ```bash
 ./unicorn -json output.json -yaml config.yaml -go config.go <file>.fig
 ```
 
-Of course, both the `-json`, `-yaml`, and `-go` arguments are optional.  If none are provided, Unicorn will execute the
+The `-json`, `-yaml`, and `-go` arguments are optional.  If none are provided, Unicorn will execute the
 program file provided and not write to any files.
 
-**FYI** It is also possible to run multiple fig programs by providing their paths after the first file.
+**Note:** It is possible to run multiple Fig programs by providing their paths after the first file.
 The programs will be run in sequence, and the environment created by one program will become the
-intiial environment of the following program. For example, the Fig programs
+intiial environment of the following program. For example, the Fig programs.
 
-test1.fig
+`test1.fig`
 
 ```js
 (define
     (firstWord "fig"))
 ```
 
-test2.fig
+`test2.fig`
 
 ```js
 (define
     (secondWord "is"))
 ```
 
-and test3.fig
+and `test3.fig`
 
 ```js
 (define
     (thirdWord "awesome!"))
 ```
 
-when run with the command
+When run with the command:
 
 ```bash
 ./unicorn -json out.json test1.fig test2.fig test3.fig
 ```
 
-will produce
+It will produce:
 
 ```js
 {
@@ -91,16 +91,14 @@ will produce
 You can see a practical example of how you might use Unicorn and Fig in the
 [demo](https://github.com/redwire/UnicornFig/tree/master/demo) contained in the repository.
 Further, you can see a full example of Uniorn's code generation in use in the
-[demo/code-gen](https://github.com/zsck/UnicornFig/tree/master/demo/code-gen) directory.
+[`demo/code-gen`](https://github.com/zsck/UnicornFig/tree/master/demo/code-gen) directory.
 
-It is advised that users read the `demo/code-gen/README.md` file to understand how the feature works and what its
-shortcomings are.
+It is advised that users read the [`demo/code-gen/README.md`](https://github.com/zsck/UnicornFig/blob/master/demo/code-gen/README.md) file to understand how the feature works and what its shortcomings are.
 
 ## Vim syntax highlighting
 
 For vim users, I've created an ftplugin, ftdetect, and syntax file for vim that provide reasonable syntax highlighting
-for Fig code.  Everything is located in the `vim/` directory.  There is also a `vim/install.sh` script that you can run
-to automatically copy the necessary files to the right place.
+for Fig code.  Everything is located in the [`vim/`](https://github.com/zsck/UnicornFig/tree/master/vim) directory.  There is also a [`vim/install.sh`](https://github.com/zsck/UnicornFig/blob/master/vim/install.sh) script that you can run to automatically copy the necessary files to the right place.
 
 ## Feedback? Questions? Suggestions?
 
