@@ -47,6 +47,47 @@ You can run a Fig program by running the command
 Of course, both the `-json`, `-yaml`, and `-go` arguments are optional.  If none are provided, Unicorn will execute the
 program file provided and not write to any files.
 
+**FYI** It is also possible to run multiple fig programs by providing their paths after the first file.
+The programs will be run in sequence, and the environment created by one program will become the
+intiial environment of the following program. For example, the Fig programs
+
+test1.fig
+
+```js
+(define
+    (firstWord "fig"))
+```
+
+test2.fig
+
+```js
+(define
+    (secondWord "is"))
+```
+
+and test3.fig
+
+```js
+(define
+    (thirdWord "awesome!"))
+```
+
+when run with the command
+
+```bash
+./unicorn -json out.json test1.fig test2.fig test3.fig
+```
+
+will produce
+
+```js
+{
+    "firstWord": "fig",
+    "secondWord": "is",
+    "thirdWord": "awesome!"
+}
+```
+
 You can see a practical example of how you might use Unicorn and Fig in the
 [demo](https://github.com/redwire/UnicornFig/tree/master/demo) contained in the repository.
 Further, you can see a full example of Uniorn's code generation in use in the
