@@ -13,11 +13,18 @@ import (
 	"strings"
 )
 
-const HelpMessage = `Run this program as ./unicorn [format file [format file [...]]] program.fig
+const HelpMessage = `Run this program as ./unicorn [format file [format file [...]]] program.fig [program2.fig program3.fig ... programN.fig]
 Currently the supported format flags are
 	-json - Output program state to a JSON file
 	-yaml - Output program state to a YAML file
 	-go   - Output a Go source code file containing a Configuration struct and parser functions
+
+At least one Fig program must be provided.
+
+When more than one Fig program is provided, each will be run one after the other, and the
+environment (global scope) produced by each will be made the environment of successive programs.
+Therefore, one can run multiple Fig programs to effectively combine their outputs into a single
+configuration.
 `
 
 var SupportedFormatHandlers = map[string]func(map[string]interface{}, string) error{
@@ -86,8 +93,7 @@ func WriteOutputFiles(formats map[string]string, data uni.Environment) error {
 	return nil
 }
 
-func Interpret(program string) (uni.Environment, error) {
-	env := uni.Environment{}
+func Interpret(program string, env uni.Environment) (uni.Environment, error) {
 	// Copy the standard library into the local scope so we don't corrupt the former
 	for key, value := range stdlib.StandardLibrary {
 		env[key] = value
@@ -123,9 +129,12 @@ func main() {
 	for format, _ := range SupportedFormatHandlers {
 		outputFormats[format] = ""
 	}
-	programFile := os.Args[len(os.Args)-1]
 	// Parse arguments in any form such as "--json output.json -YAML data.yaml myprogram.fig"
-	for i := 1; i < len(os.Args)-1; i++ {
+	i := 1
+	for ; i < len(os.Args)-1; i++ {
+		if !strings.HasPrefix(os.Args[i], "-") {
+			break
+		}
 		format := strings.ToLower(strings.Replace(os.Args[i], "-", "", -1))
 		_, isSupported := outputFormats[format]
 		if isSupported {
@@ -133,26 +142,37 @@ func main() {
 			i++
 		}
 	}
-	// Open and interpret the program file
-	file, err := os.Open(programFile)
-	if err != nil {
-		fmt.Println("Couldn't open program file " + programFile)
-		fmt.Println(err)
+	// Treat all arguments after the flags as source files
+	env := uni.Environment{}
+	if i == len(os.Args)-1 {
+		fmt.Println("No input program file provided.")
+		fmt.Println(HelpMessage)
 		return
 	}
-	defer file.Close()
-	programBytes, err := ioutil.ReadAll(file)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	program := string(programBytes)
-	env, err := Interpret(program)
-	if err != nil {
-		fmt.Println("ERROR\n  ", err.Error())
+	for ; i < len(os.Args); i++ {
+		// Open and interpret the program file
+		programFile := os.Args[i]
+		fmt.Println("Trying to execute " + programFile)
+		file, err := os.Open(programFile)
+		if err != nil {
+			fmt.Println("Couldn't open program file " + programFile)
+			fmt.Println(err)
+			return
+		}
+		defer file.Close()
+		programBytes, err := ioutil.ReadAll(file)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		program := string(programBytes)
+		env, err = Interpret(program, env)
+		if err != nil {
+			fmt.Println("ERROR\n  ", err.Error())
+		}
 	}
 	// Produce the desired output files
-	err = WriteOutputFiles(outputFormats, env)
+	err := WriteOutputFiles(outputFormats, env)
 	if err != nil {
 		fmt.Println("ERROR\n  ", err.Error())
 	}
