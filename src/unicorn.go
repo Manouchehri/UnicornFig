@@ -152,7 +152,6 @@ func main() {
 	for ; i < len(os.Args); i++ {
 		// Open and interpret the program file
 		programFile := os.Args[i]
-		fmt.Println("Trying to execute " + programFile)
 		file, err := os.Open(programFile)
 		if err != nil {
 			fmt.Println("Couldn't open program file " + programFile)
