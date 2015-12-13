@@ -34,9 +34,9 @@ sh build.sh
 ```
 
 Now you can begin learning the language by checking out the introductory guide in
-[docs/guide.md](https://github.com/redwire/UnicornFig/blob/master/docs/guide.md)
+[`docs/guide.md`](https://github.com/redwire/UnicornFig/blob/master/docs/guide.md)
 and/or by reading the example programs showing off the language's features in
-`examples/`.  All of the code there can be executed by unicorn.
+[`examples/`](https://github.com/zsck/UnicornFig/tree/master/examples).  All of the code there can be executed by Unicorn.
 
 You can run a Fig program by running the following command:
 
@@ -47,7 +47,7 @@ You can run a Fig program by running the following command:
 The `-json`, `-yaml`, and `-go` arguments are optional.  If none are provided, Unicorn will execute the
 program file provided and not write to any files.
 
-**Note:** It is possible to run multiple fig programs by providing their paths after the first file.
+**Note:** It is possible to run multiple Fig programs by providing their paths after the first file.
 The programs will be run in sequence, and the environment created by one program will become the
 intiial environment of the following program. For example, the Fig programs.
 
