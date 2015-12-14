@@ -28,13 +28,13 @@ Of course, to do this, you will need to have [Git](https://www.git-scm.com/) and
 installed on your computer.
 
 ```bash
-git clone https://github.com/redwire/UnicornFig.git
+git clone https://github.com/zsck/UnicornFig.git
 cd UnicornFig
 sh build.sh
 ```
 
 Now you can begin learning the language by checking out the introductory guide in
-[`docs/guide.md`](https://github.com/redwire/UnicornFig/blob/master/docs/guide.md)
+[`docs/guide.md`](https://github.com/zsck/UnicornFig/blob/master/docs/guide.md)
 and/or by reading the example programs showing off the language's features in
 [`examples/`](https://github.com/zsck/UnicornFig/tree/master/examples).  All of the code there can be executed by Unicorn.
 
@@ -89,7 +89,7 @@ It will produce:
 ```
 
 You can see a practical example of how you might use Unicorn and Fig in the
-[demo](https://github.com/redwire/UnicornFig/tree/master/demo) contained in the repository.
+[demo](https://github.com/zsck/UnicornFig/tree/master/demo) contained in the repository.
 Further, you can see a full example of Uniorn's code generation in use in the
 [`demo/code-gen`](https://github.com/zsck/UnicornFig/tree/master/demo/code-gen) directory.
 
@@ -104,4 +104,4 @@ for Fig code.  Everything is located in the [`vim/`](https://github.com/zsck/Uni
 
 I'd love to hear about them!
 
-The best place to go is the [Github issue tracker](https://github.com/redwire/UnicornFig/issues) for the project.
+The best place to go is the [Github issue tracker](https://github.com/zsck/UnicornFig/issues) for the project.
